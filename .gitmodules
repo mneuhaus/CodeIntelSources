@@ -1,0 +1,33 @@
+[submodule "src/codeintel"]
+	path = src/codeintel
+	url = git://github.com/SublimeCodeIntel/codeintel.git
+[submodule "src/python-sitelib"]
+	path = src/python-sitelib
+	url = git://github.com/SublimeCodeIntel/python-sitelib.git
+[submodule "src/silvercity"]
+	path = src/silvercity
+	url = git://github.com/SublimeCodeIntel/silvercity.git
+[submodule "src/cElementTree"]
+	path = src/cElementTree
+	url = git://github.com/SublimeCodeIntel/cElementTree.git
+[submodule "src/elementtree"]
+	path = src/elementtree
+	url = git://github.com/SublimeCodeIntel/elementtree.git
+[submodule "src/inflector"]
+	path = src/inflector
+	url = git://github.com/SublimeCodeIntel/inflector.git
+[submodule "src/pcre"]
+	path = src/pcre
+	url = git://github.com/SublimeCodeIntel/pcre.git
+[submodule "src/scintilla"]
+	path = src/scintilla
+	url = git://github.com/SublimeCodeIntel/scintilla.git
+[submodule "src/sgmlop"]
+	path = src/sgmlop
+	url = git://github.com/SublimeCodeIntel/sgmlop.git
+[submodule "src/smallstuff"]
+	path = src/smallstuff
+	url = git://github.com/SublimeCodeIntel/smallstuff.git
+[submodule "src/chardet"]
+	path = src/chardet
+	url = git://github.com/erikrose/chardet.git
