@@ -4,7 +4,6 @@ cd "`dirname "$0"`/../"
 
 ################################################################################
 # Clone needed stuff for CodeIntel:
-
 project_clone() {
 	if [ ! -d "src/$1" ]; then
 		echo "Cloning $1 from SVN..."
