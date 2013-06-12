@@ -52,14 +52,25 @@ update() {
 			git co patched
 			git reset --hard svn
 
+			# Apply patches here... (probably cannot be totally automated)
+			if [ -d "../patches/$1" ]; then
+				echo "Patching $1..."
+				find "../patches/$1" -type f -name '*.patch' -print0 | sort -z | xargs -0 -I {} sh -c "echo {}; patch -sup0 < {}"
+				find . \( -name '*.orig' -o -name '*.rej' \) -delete
+				cd "../patches/$1"
+				find . -type d -name '*' -mindepth 1 -print0 | xargs -0 -I {} sh -c "echo mkdir -p ../../$1/{}; mkdir -p ../../$1/{}"
+				find . -type f -name '*' -mindepth 2 -print0 | xargs -0 -I {} sh -c "echo cp {} ../../$1/{}; rm -f ../../$1/{}; cp {} ../../$1/{}"
+				cd "../../$1"
+			fi
+
 			echo
 			echo "********************************************************************************"
 			echo "*                                                                              *"
-			echo "*  Please apply patches and then press [ENTER] to continue (ctrl+c to abort)   *"
+			echo "*   Please check patches were correctly applied, stash newly created files     *"
+			echo "*                 and then press [ENTER] (ctrl+c to abort)                     *"
 			echo "*                                                                              *"
 			echo "********************************************************************************"
 			read
-			# Apply patches here... (probably cannot be automated)
 
 			BEFORE=`git log | head -1`
 			git commit -am "OpenKomodo patches applied to SVN trunk"
@@ -113,6 +124,27 @@ update() {
 			git co py3
 			git reset --hard master
 			python-modernize --compat-unicode --no-diffs -nwj 4 .
+
+			# Apply Python3 (py3) patches here... (probably cannot be totally automated)
+			if [ -d "../patches/py3/$1" ]; then
+				echo "Patching $1 for Python3..."
+				find "../patches/py3/$1" -type f -name '*.patch' -print0 | sort -z | xargs -0 -I {} sh -c "echo {}; patch -sup0 < {}"
+				find . \( -name '*.orig' -o -name '*.rej' \) -delete
+				cd "../patches/py3/$1"
+				find . -type d -name '*' -mindepth 1 -print0 | xargs -0 -I {} sh -c "echo mkdir -p ../../../$1/{}; mkdir -p ../../../$1/{}"
+				find . -type f -name '*' -mindepth 2 -print0 | xargs -0 -I {} sh -c "echo cp {} ../../../$1/{}; rm -f ../../../$1/{}; cp {} ../../../$1/{}"
+				cd "../../../$1"
+			fi
+
+			echo
+			echo "********************************************************************************"
+			echo "*                                                                              *"
+			echo "*   Please check patches were correctly applied, stash newly created files     *"
+			echo "*                 and then press [ENTER] (ctrl+c to abort)                     *"
+			echo "*                                                                              *"
+			echo "********************************************************************************"
+			read
+
 			git commit -am "Python2 and Python3 support (using python-modernize's 2to3)..."
 			git push -f
 		fi
@@ -128,7 +160,7 @@ update() {
 	fi
 }
 
-update "codeintel"
+update "patches"
 update "python-sitelib"
 update "silvercity"
 update "cElementTree"
@@ -138,5 +170,5 @@ update "pcre"
 update "scintilla"
 update "sgmlop"
 update "smallstuff"
-update "patches"
 update "udl"
+update "codeintel"

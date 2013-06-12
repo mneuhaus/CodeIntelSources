@@ -18,7 +18,7 @@ project_clone() {
 		cd "../../"
 	fi
 }
-project_clone "codeintel" "src/codeintel"
+project_clone "patches" "contrib/patches"
 project_clone "python-sitelib" "src/python-sitelib"
 project_clone "silvercity" "src/silvercity"
 project_clone "cElementTree" "contrib/cElementTree"
@@ -28,8 +28,8 @@ project_clone "pcre" "contrib/pcre"
 project_clone "scintilla" "contrib/scintilla"
 project_clone "sgmlop" "contrib/sgmlop"
 project_clone "smallstuff" "contrib/smallstuff"
-project_clone "patches" "contrib/patches"
 project_clone "udl" "src/udl"
+project_clone "codeintel" "src/codeintel"
 
 ################################################################################
 # Clone full openkomodo and addons repositories (only if needed):
