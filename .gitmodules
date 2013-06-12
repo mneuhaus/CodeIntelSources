@@ -31,3 +31,9 @@
 [submodule "src/chardet"]
 	path = src/chardet
 	url = git://github.com/erikrose/chardet.git
+[submodule "src/patches"]
+	path = src/patches
+	url = git://github.com/SublimeCodeIntel/patches.git
+[submodule "src/udl"]
+	path = src/udl
+	url = git://github.com/SublimeCodeIntel/udl.git
