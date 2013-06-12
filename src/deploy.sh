@@ -14,15 +14,14 @@ cp -Rf "codeintel/lib/codeintel2" "$DEPLOYMENT_PATH" && \
 mkdir -p "$DEPLOYMENT_PATH/codeintel2/lexers" && cp "build/udl/udl/"*.lexres "$DEPLOYMENT_PATH/codeintel2/lexers" && \
 
 cp -Rf "silvercity/PySilverCity/SilverCity" "$DEPLOYMENT_PATH" && \
-cp -Rf "more4sublime/_SilverCity.py" "$DEPLOYMENT_PATH/SilverCity" && \
+cp -Rf "more4sublime/libs/_SilverCity.py" "$DEPLOYMENT_PATH/SilverCity" && \
 
-cp -Rf "more4sublime/ciElementTree.py" "$DEPLOYMENT_PATH" && \
+cp -Rf "more4sublime/libs/ciElementTree.py" "$DEPLOYMENT_PATH" && \
 
-cp -Rf "more4sublime/sgmlop.py" "$DEPLOYMENT_PATH" && \
+cp -Rf "more4sublime/libs/sgmlop.py" "$DEPLOYMENT_PATH" && \
 
 cp -Rf "more4sublime/styles.py" "$DEPLOYMENT_PATH" && \
 cp -Rf "smallstuff/winprocess.py" "$DEPLOYMENT_PATH" && \
-
 cp -Rf "python-sitelib/HTMLTreeParser.py" "$DEPLOYMENT_PATH" && \
 cp -Rf "python-sitelib/koCatalog.py" "$DEPLOYMENT_PATH" && \
 cp -Rf "python-sitelib/koDTD.py" "$DEPLOYMENT_PATH" && \
