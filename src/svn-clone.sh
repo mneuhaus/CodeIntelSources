@@ -28,6 +28,8 @@ project_clone "pcre" "contrib/pcre"
 project_clone "scintilla" "contrib/scintilla"
 project_clone "sgmlop" "contrib/sgmlop"
 project_clone "smallstuff" "contrib/smallstuff"
+project_clone "patches" "contrib/patches"
+project_clone "udl" "src/udl"
 
 ################################################################################
 # Clone full openkomodo and addons repositories (only if needed):
