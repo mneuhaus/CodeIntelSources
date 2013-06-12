@@ -5,11 +5,11 @@ Most of the repositories in ``SublimeCodeIntel/src`` come from openkomodo SVN re
 
 Generally, in our fork of these repositories, there are branches ``master``, ``svn``, ``pep8``, ``patched`` and ``patched-pep8``, ``py3``:
 
-	* Branch ``svn`` is the one updated directly from OpenKomodo's SVN (updated when ``svn-rebase.sh`` is run)
+	* Branch ``svn`` is the one updated directly from Open Komodo's SVN (updated when ``svn-rebase.sh`` is run)
 
 	* Branch ``pep8`` is ``svn`` + ``autopep8 -virj 0 .``
 
-	* Branch ``patched`` is ``svn`` + all relevant OpenKomodo patches.
+	* Branch ``patched`` is ``svn`` + all relevant Open Komodo patches.
 
 	* Branch ``patched-pep8`` is ``patched`` + ``autopep8 -virj 0 .``
 
@@ -28,12 +28,12 @@ There are a few tools to help fetching and maintaining updated the codebase of S
 	* ``svn-rebase.sh`` is the one which actual upgrades stuff from the SVN, cleans the code, applies patches and so on.
 
 
-OpenKomodo Patches
-==================
+Open Komodo Patches
+===================
 
 There are three sets of patches in Open Komodo:
 
-	* The ones in the repository ``patches`` in the ``/`` directory (which come from ``http://svn.openkomodo.com/repos/openkomodo/trunk/contrib/patches``). These are for several modules, but they all have already been applied by the OpenKomodo team to the official SVN repository.
+	* The ones in the repository ``patches`` in the ``/`` directory (which come from ``http://svn.openkomodo.com/repos/openkomodo/trunk/contrib/patches``). These are for several modules, but they all have already been applied by the Open Komodo team to the official SVN repository.
 
 	* The ones in the repository ``patches`` in the directory ``/scintilla``. These are all for scintilla and need to be applied during the building of Code Intel dependencies
 
@@ -47,19 +47,26 @@ The repository ``codeintel``, within SublimeCodeIntel's repositories, is the hea
 
 Libraries/Modules
 -----------------
-SublimeCodeIntel requires a lot of libraries/modules to work.
+SublimeCodeIntel requires a lot of libraries/modules from Open Komodo to work.
+
+
+Open Komodo's official repository with codeintel2 source:
+
+	[http://svn.openkomodo.com/repos/openkomodo/trunk/src/codeintel/lib/codeintel2/]
+
 
 The following are in C/C++ and need to be compiled:
 
 	* ``silvercity``: Used by CodeIntel2 to parse the user's source code in most (if not all) languages, like CSS/Python/JavaScript/Ruby/etc.
 
-	* ``scintilla``: Library used by ``SilverCity``. This library is the one which actually does the heavy lifting and parsing of all user's source code.
+	* ``scintilla``: Library used by ``SilverCity``. This library is the one which actually does the heavy lifting and parsing of all user's source code. (it's patched to add User Language Definitions and XML, using 210 instead
+	of the older bundled version with SilverCity)
 
 	* ``pcre``: Library used by Scintilla (and should be linked statically to avoid version problems in linux and other systems)
 
-	* ``cElementTree``: or more precisely ``ciElementTree`` (the patched, more efficient version of ``cElementTree``). Module used to parse some user's source code in some languages, like HTML/XML. And also to read the symbol catalogs, which all are XML files with the extension ``.cix``.
+	* ``cElementTree``: or more precisely ``ciElementTree`` (the patched, more efficient version of ``cElementTree``). Module used to parse some user's source code in some languages, like HTML/XML. And also to read the symbol catalogs, which all are XML files with the extension ``.cix``. (it's patched to be ciElementTree, to add Komodo CodeIntel2 features)
 
-	* ``sgmlop``: Module used by ``elementtree`` and ``HTMLTreeParser``
+	* ``sgmlop``: Module used by ``elementtree`` and ``HTMLTreeParser`` (it's patched to have '%' symbol as PI and send positions to Parsers)
 
 
 The following have their own fork at SublimeCodeIntel's repositories and are in pure python and need not to be compiled:
@@ -87,11 +94,28 @@ The following have their own fork at SublimeCodeIntel's repositories and are in 
 
 	* ``inflector``: Used by the Rails language parser to build a "migration class tree". This has a problem in the Spanish module with mixed characters in the wrong encoding.
 
-	* ``chardet``: Module used by ``textinfo`` (not included in the OpenKomodo official repository). This is used to detect the encoding of the text being passed to CodeIntel2 if no encoding is provided.
+	* ``chardet``: Module used by ``textinfo`` (not included in the Open Komodo official repository). This is used to detect the encoding of the text being passed to CodeIntel2 if no encoding is provided. Universal Encoding Detector (chardet, GNU LGPL): [http://chardet.feedparser.org/]
 
-	* ``smallstuff``: Some of the modules in here were collected from other sources and were also not included in the OpenKomodo official repository, but are also used.
+	* ``smallstuff``: Some of the modules in here were collected from other sources and were also not included in the Open Komodo official repository, but are also used.
 
-	* Other used files scattered in the sources of OpenKomodo (and placed inside more4sublime):
+	* ``elementtree``: (it's patched to have "iElementTree" features in the pure python version
+		of ElementTree. Not really needed if using ciElementTree)
+
+	* Other used files scattered in the sources of Open Komodo (and placed inside more4sublime):
 		- ``libs/*.py``: Created by Kronuz for cross platform imports
 		- ``styles.py``: ``/openkomodo/src/schemes/styles.py``
-		- ``chromereg.py``: ``/openkomodo/src/sdk//pylib/chromereg.py``
+		- ``chromereg.py``: ``/openkomodo/src/sdk//pylib/chromereg.py`` (used by the UDL build process)
+
+
+Other files needed during the build process:
+
+	* ``udl``: Lexers (codeintel2/lexers) from User Defined Languages (UDLs). Compiled using::
+
+		find udl -name '*-mainlex.udl' -exec python luddite.py just_compile {} \;
+
+	* ``scintilla`` needs the interface header files. which is generated by running ``HFacer.py`` in the ``scintilla/include`` directory::
+		cd scintilla/include && HFacer.py
+
+	* ``SilverCity`` needs ``ScintillaConstants.py``, which is generated by running ``write_scintilla.py`` in the ``silvercity/PySilverCity/Src`` directory::
+
+		cd build/silvercity/PySilverCity/Src && python write_scintilla.py ../../../scintilla/include/ ../../../scintilla/include/Scintilla.iface ../SilverCity/ScintillaConstants.py
