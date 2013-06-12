@@ -91,6 +91,7 @@ The following have their own fork at SublimeCodeIntel's repositories and are in 
 
 	* ``smallstuff``: Some of the modules in here were collected from other sources and were also not included in the OpenKomodo official repository, but are also used.
 
-	* Other used files scattered in the sources of OpenKomodo:
+	* Other used files scattered in the sources of OpenKomodo (and placed inside more4sublime):
+		- ``libs/*.py``: Created by Kronuz for cross platform imports
 		- ``styles.py``: ``/openkomodo/src/schemes/styles.py``
-		- ``langinfo_mxml.py``: ``/openkomodo/src/udl/skel/MXML/pylib/langinfo_mxml.py``
+		- ``chromereg.py``: ``/openkomodo/src/sdk//pylib/chromereg.py``
