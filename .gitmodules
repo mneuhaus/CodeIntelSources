@@ -37,3 +37,6 @@
 [submodule "src/udl"]
 	path = src/udl
 	url = git://github.com/SublimeCodeIntel/udl.git
+[submodule "SublimeCodeIntel"]
+	path = SublimeCodeIntel
+	url = git://github.com/SublimeCodeIntel/SublimeCodeIntel.git
