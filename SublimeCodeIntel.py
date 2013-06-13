@@ -502,6 +502,7 @@ def codeintel_cleanup(id):
 
 
 def codeintel_manager(folders_id):
+    folders_id = None
     global _ci_mgr_, condeintel_log_filename, condeintel_log_file
     mgr = _ci_mgr_.get(folders_id)
     if mgr is None:
@@ -510,7 +511,7 @@ def codeintel_manager(folders_id):
                 thread.finalize()  # this finalizes the index, citadel and the manager and waits them to end (join)
         mgr = Manager(
             extra_module_dirs=None,
-            db_base_dir=os.path.expanduser(os.path.join('~', '.codeintel', 'databases', folders_id)),
+            db_base_dir=None,  # os.path.expanduser(os.path.join('~', '.codeintel', 'databases', folders_id)),
             db_catalog_dirs=[],
             db_import_everything_langs=None,
         )
