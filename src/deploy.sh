@@ -4,16 +4,14 @@ DEPLOYMENT_PATH="../libs"
 
 mkdir -p "$DEPLOYMENT_PATH/_local_arch" && \
 
-cp -Rf "chardet/chardet" "$DEPLOYMENT_PATH" && \
-
-cp -Rf "elementtree/elementtree" "$DEPLOYMENT_PATH" && \
-
-cp -Rf "inflector" "$DEPLOYMENT_PATH" && \
+touch "$DEPLOYMENT_PATH/_local_arch/__init__.py" && \
+cp -Rf "build/libs/"* "$DEPLOYMENT_PATH/_local_arch" && \
 
 cp -Rf "codeintel/lib/codeintel2" "$DEPLOYMENT_PATH" && \
-mkdir -p "$DEPLOYMENT_PATH/codeintel2/lexers" && cp "build/udl/udl/"*.lexres "$DEPLOYMENT_PATH/codeintel2/lexers" && \
+mkdir -p "$DEPLOYMENT_PATH/codeintel2/lexers" && \
+cp -Rf "build/udl/udl/"*.lexres "$DEPLOYMENT_PATH/codeintel2/lexers" && \
 
-cp -Rf "silvercity/PySilverCity/SilverCity" "$DEPLOYMENT_PATH" && \
+cp -Rf "build/silvercity/PySilverCity/SilverCity" "$DEPLOYMENT_PATH" && \
 cp -Rf "more4sublime/libs/_SilverCity.py" "$DEPLOYMENT_PATH/SilverCity" && \
 
 cp -Rf "more4sublime/libs/ciElementTree.py" "$DEPLOYMENT_PATH" && \
@@ -41,6 +39,12 @@ cp -Rf "python-sitelib/langinfo_tiny.py" "$DEPLOYMENT_PATH" && \
 cp -Rf "python-sitelib/process.py" "$DEPLOYMENT_PATH" && \
 cp -Rf "python-sitelib/textinfo.py" "$DEPLOYMENT_PATH" && \
 cp -Rf "python-sitelib/which.py" "$DEPLOYMENT_PATH" && \
+
+cp -Rf "chardet/chardet" "$DEPLOYMENT_PATH" && \
+
+cp -Rf "elementtree/elementtree" "$DEPLOYMENT_PATH" && \
+
+cp -Rf "inflector" "$DEPLOYMENT_PATH" && \
 
 echo "Deployment Done!" || \
 echo "Deployment Failed!"
