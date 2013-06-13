@@ -55,8 +55,6 @@ build() {
 		rm -rf "$LOGDIR" && mkdir -p "$LOGDIR"
 	fi
 
-	mkdir -p "build/libs"
-
 	( ([ "$OSTYPE" == "" ] || [ "$ARG" != "--force" ] && [ -d build/pcre ]) || (echo "Building PCRE (*nix)..." && \
 		rm -rf build/pcre && \
 		cp -R pcre build/pcre && \
@@ -143,8 +141,8 @@ build() {
 	echo "Build Failed!$ERR"
 
 	if [ $OSTYPE != "" ]; then
-		strip "build/libs/*.$SO" > /dev/null 2>&1
-		strip -S "build/libs/*.$SO" > /dev/null 2>&1
+		find "build" -type f -name "*.$SO" -exec strip {} \; > /dev/null 2>&1
+		find "build" -type f -name "*.$SO" -exec strip -S {} \; > /dev/null 2>&1
 	fi
 }
 

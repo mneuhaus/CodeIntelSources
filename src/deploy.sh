@@ -7,12 +7,6 @@ DEPLOYING=1
 . build.sh
 
 deploy() {
-
-	if [ "$ARG" = "--force" ]; then
-		rm -rf "build"
-		rm -rf "$LOGDIR" && mkdir -p "$LOGDIR"
-	fi
-
 	mkdir -p "$DEPLOYMENT_PATH/libs" && \
 	mkdir -p "$DEPLOYMENT_PATH/arch/_local_arch" && \
 	touch "$DEPLOYMENT_PATH/arch/_local_arch/__init__.py" && \
