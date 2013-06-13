@@ -137,6 +137,7 @@ update() {
 			git reset --hard master || \
 			check "Cannot switch to py3!"
 			python-modernize --compat-unicode --no-diffs -nwj 4 .
+			git commit -am "Python2 and Python3 support (using python-modernize's 2to3)"
 
 			# Apply Python3 (py3) patches here... (probably cannot be totally automated)
 			if [ -d "../patches/py3/$1" ]; then
@@ -150,7 +151,7 @@ update() {
 				check "Please confirm Python3 patches were correctly applied (and stash newly created files if needed)."
 			fi
 
-			git commit -am "Python2 and Python3 support (using python-modernize's 2to3)..."
+			git commit -am "Modernized code + py3 patches"
 			git push -f
 		fi
 
