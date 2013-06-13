@@ -2,6 +2,8 @@
 
 cd "`dirname "$0"`"
 
+ARG="$1"
+
 update() {
 	if [ -f "$1/.git/authors" ]; then
 		echo "################################################################################"
@@ -17,6 +19,8 @@ update() {
 		git svn rebase
 		AFTER=`git log | head -1`
 		if [ "$BEFORE" != "$AFTER" ]; then
+			SVN_UPDATED_DONE="YES"
+		elif [ "$ARG" = "--force" ]; then
 			SVN_UPDATED_DONE="YES"
 		else
 			SVN_UPDATED_DONE="NO"
