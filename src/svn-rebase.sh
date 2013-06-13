@@ -4,6 +4,15 @@ cd "`dirname "$0"`"
 
 ARG="$1"
 
+check() {
+	echo
+	echo "********************************************************************************"
+	echo "* $1"
+	echo "* Press [enter] to continue [ctrl+c] to abort."
+	echo "********************************************************************************"
+	read
+}
+
 update() {
 	if [ -f "$1/.git/authors" ]; then
 		echo "################################################################################"
@@ -13,11 +22,13 @@ update() {
 		# Switch to svn branch...
 		git branch svn >/dev/null 2>&1
 		git push -u origin svn >/dev/null 2>&1
-		git co svn
 
 		BEFORE=`git log | head -1`
-		git svn rebase
+		git co svn && \
+		git svn rebase || \
+		check "Please check the SVN rebase!"
 		AFTER=`git log | head -1`
+
 		if [ "$BEFORE" != "$AFTER" ]; then
 			SVN_UPDATED_DONE="YES"
 		elif [ "$ARG" = "--force" ]; then
@@ -28,15 +39,16 @@ update() {
 
 		if [ "$SVN_UPDATED_DONE" = "YES" ]; then
 			# Commit changed
-			git push
+			git push -f
 
 			echo
 			echo "________________________________________________________________________________"
 			echo ">>> Apply PEP8 to SVN $1..."
 			git branch pep8 >/dev/null 2>&1
 			git push -u origin pep8 >/dev/null 2>&1
-			git co pep8
-			git reset --hard svn
+			git co pep8 && \
+			git reset --hard svn || \
+			check "Cannot switch to pep8!"
 			autopep8 -virj 4 .
 			BEFORE=`git log | head -1`
 			git commit -am "PEP 8 applied to SVN trunk"
@@ -53,8 +65,9 @@ update() {
 			echo ">>> Apply Patches over SVN of $1..."
 			git branch patched >/dev/null 2>&1
 			git push -u origin patched >/dev/null 2>&1
-			git co patched
-			git reset --hard svn
+			git co patched && \
+			git reset --hard svn || \
+			check "Cannot switch to patched!"
 
 			# Apply patches here... (probably cannot be totally automated)
 			if [ -d "../patches/$1" ]; then
@@ -65,16 +78,8 @@ update() {
 					find . -type d -name '*' -mindepth 1 -print0 | xargs -0 -I {} sh -c "echo mkdir -p ../../$1/{}; mkdir -p ../../$1/{}"
 					find . -type f -name '*' -mindepth 2 -print0 | xargs -0 -I {} sh -c "echo cp {} ../../$1/{}; rm -f ../../$1/{}; cp {} ../../$1/{}"
 				cd "../../$1"
+				check "Please confirm patches were correctly applied (and stash newly created files if needed)."
 			fi
-
-			echo
-			echo "********************************************************************************"
-			echo "*                                                                              *"
-			echo "*   Please check patches were correctly applied, stash newly created files     *"
-			echo "*                 and then press [ENTER] (ctrl+c to abort)                     *"
-			echo "*                                                                              *"
-			echo "********************************************************************************"
-			read
 
 			BEFORE=`git log | head -1`
 			git commit -am "OpenKomodo patches applied to SVN trunk"
@@ -92,8 +97,9 @@ update() {
 				echo ">>> Apply PEP8 to patched branch of $1..."
 				git branch patched-pep8 >/dev/null 2>&1
 				git push -u origin patched-pep8 >/dev/null 2>&1
-				git co patched-pep8
-				git reset --hard patched
+				git co patched-pep8 && \
+				git reset --hard patched || \
+				check "Cannot switch to patched-pep8!"
 				autopep8 -virj 4 .
 				git commit -am "PEP 8 applied to SVN trunk + OpenKomodo patches"
 				git push -f
@@ -105,8 +111,9 @@ update() {
 				fi
 				git branch patched-pep8 >/dev/null 2>&1
 				git push -u origin patched-pep8 >/dev/null 2>&1
-				git co patched-pep8
-				git reset --hard pep8
+				git co patched-pep8 && \
+				git reset --hard pep8 || \
+				check "Cannot switch to patched-pep8!"
 				if [ "$PEP8_DONE" = "YES" ]; then
 					git commit --amend -m "PEP 8 applied to SVN trunk + OpenKomodo patches"
 				fi
@@ -116,8 +123,9 @@ update() {
 			echo
 			echo "________________________________________________________________________________"
 			echo ">>> Rebasing master of $1..."
-			git co master
-			git rebase patched-pep8
+			git co master && \
+			git rebase patched-pep8 || \
+			check "Please check the rebase!"
 			git push -f
 
 			echo
@@ -125,8 +133,9 @@ update() {
 			echo ">>> Making Python3 compatible branch of $1..."
 			git branch py3 >/dev/null 2>&1
 			git push -u origin py3 >/dev/null 2>&1
-			git co py3
-			git reset --hard master
+			git co py3 && \
+			git reset --hard master || \
+			check "Cannot switch to py3!"
 			python-modernize --compat-unicode --no-diffs -nwj 4 .
 
 			# Apply Python3 (py3) patches here... (probably cannot be totally automated)
@@ -138,16 +147,8 @@ update() {
 					find . -type d -name '*' -mindepth 1 -print0 | xargs -0 -I {} sh -c "echo mkdir -p ../../../$1/{}; mkdir -p ../../../$1/{}"
 					find . -type f -name '*' -mindepth 2 -print0 | xargs -0 -I {} sh -c "echo cp {} ../../../$1/{}; rm -f ../../../$1/{}; cp {} ../../../$1/{}"
 				cd "../../../$1"
+				check "Please confirm Python3 patches were correctly applied (and stash newly created files if needed)."
 			fi
-
-			echo
-			echo "********************************************************************************"
-			echo "*                                                                              *"
-			echo "*   Please check patches were correctly applied, stash newly created files     *"
-			echo "*                 and then press [ENTER] (ctrl+c to abort)                     *"
-			echo "*                                                                              *"
-			echo "********************************************************************************"
-			read
 
 			git commit -am "Python2 and Python3 support (using python-modernize's 2to3)..."
 			git push -f
