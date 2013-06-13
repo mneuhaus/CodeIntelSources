@@ -1,4 +1,7 @@
 #!/bin/sh
+if [ ! -d build ]; then
+	. build.sh
+fi
 
 DEPLOYMENT_PATH="../libs"
 
