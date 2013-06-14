@@ -11,12 +11,12 @@ if [ $OSTYPE = "linux-gnu" ]; then
 	echo "=========================="
 	BUILDDIR="$SRCDIR/build"
 	PYTHON="python"
-	if [ `uname -m` == 'x86_64' ]; then
-		CXXFLAGS="-fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre $CXXFLAGS"
-		CFLAGS="-fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre $CFLAGS"
+	if [ `uname -m` = "x86_64" ]; then
+		export CXXFLAGS="-fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CFLAGS="-fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 	else
-		CXXFLAGS="-DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre $CXXFLAGS"
-		CFLAGS="-DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre $CFLAGS"
+		export CXXFLAGS="-DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CFLAGS="-DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 	fi
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
 	SO="so"
@@ -25,14 +25,14 @@ elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	echo "============================="
 	BUILDDIR="$SRCDIR/build"
 	PYTHON="python"
-	ARCHFLAGS="-arch i386 -arch x86_64 $ARCHFLAGS"
-	CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre $CXXFLAGS"
-	CFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre $CFLAGS"
-	LDFLAGS="-arch i386 -arch x86_64 $LDFLAGS"
+	export ARCHFLAGS="-arch i386 -arch x86_64"
+	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
+	export CFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
+	export LDFLAGS="-arch i386 -arch x86_64"
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
 	SO="so"
 else
-	if [[ "$FRAMEWORKDIR" == *"Framework64"* ]]; then
+	if [[ "$FRAMEWORKDIR" = *"Framework64"* ]]; then
 		echo "SublimeCodeIntel for Windows (amd64)"
 		echo "===================================="
 		BUILDDIR="$SRCDIR/build"
@@ -48,8 +48,8 @@ else
 		ERR="$ERR Python must exist at $PYTHON"
 		PYTHON="python"
 	fi
-	CXXFLAGS="-I $BUILDDIR/pcre $CXXFLAGS"
-	CFLAGS="-I $BUILDDIR/pcre $CFLAGS"
+	export CXXFLAGS="-I $BUILDDIR/pcre $CXXFLAGS"
+	export CFLAGS="-I $BUILDDIR/pcre $CFLAGS"
 	LIBPCRE="$BUILDDIR/pcre/libpcre.lib"
 	OSTYPE=""
 	SO="pyd"
@@ -69,7 +69,7 @@ build() {
 		rm -rf "$BUILDDIR/pcre" && \
 		cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
 		cd "$BUILDDIR/pcre" && \
-			([ "$GIT_BRANCH" == "" ] || git checkout "$GIT_BRANCH") && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			./configure --disable-shared --disable-dependency-tracking --enable-utf8 --enable-unicode-properties > "$LOGDIR/PCRE.log" 2>&1 && \
 			mkdir .libs && \
 			make >> "$LOGDIR/PCRE.log" 2>&1 && \
@@ -80,7 +80,7 @@ build() {
 		rm -rf "$BUILDDIR/pcre" && \
 		cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
 		cd "$BUILDDIR/pcre" && \
-			([ "$GIT_BRANCH" == "" ] || git checkout "$GIT_BRANCH") && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			cp "Win32/pcre.h" "pcre.h" && \
 			cp "Win32/config.h" "config.h" && \
 			echo "#undef HAVE_DIRENT_H" >> config.h && \
@@ -98,7 +98,7 @@ build() {
 		rm -rf "$BUILDDIR/sgmlop" && \
 		cp -R "$SRCDIR/sgmlop" "$BUILDDIR/sgmlop" && \
 		cd "$BUILDDIR/sgmlop" && \
-			([ "$GIT_BRANCH" == "" ] || git checkout "$GIT_BRANCH") && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			$PYTHON setup.py build > "$LOGDIR/Sgmlop.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \
@@ -107,7 +107,7 @@ build() {
 		rm -rf "$BUILDDIR/scintilla" && \
 		cp -R "$SRCDIR/scintilla" "$BUILDDIR/scintilla" && \
 		cd "$BUILDDIR/scintilla" && \
-			([ "$GIT_BRANCH" == "" ] || git checkout "$GIT_BRANCH") && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			cd include && \
 				$PYTHON HFacer.py > "$LOGDIR/Scintilla.log" 2>&1 && \
 		cd "$SRCDIR"
@@ -117,7 +117,7 @@ build() {
 		rm -rf "$BUILDDIR/silvercity" && \
 		cp -R "$SRCDIR/silvercity" "$BUILDDIR/silvercity" && \
 		cd "$BUILDDIR/silvercity" && \
-			([ "$GIT_BRANCH" == "" ] || git checkout "$GIT_BRANCH") && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			cp -f "$LIBPCRE" . && \
 			cd PySilverCity/Src && \
 				$PYTHON write_scintilla.py \
@@ -133,7 +133,7 @@ build() {
 		rm -rf "$BUILDDIR/cElementTree" && \
 		cp -R "$SRCDIR/cElementTree" "$BUILDDIR/cElementTree" && \
 		cd "$BUILDDIR/cElementTree" && \
-			([ "$GIT_BRANCH" == "" ] || git checkout "$GIT_BRANCH") && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			$PYTHON setup.py build > "$LOGDIR/cElementTree.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \

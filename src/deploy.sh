@@ -69,7 +69,7 @@ deploy() {
 	echo "Deployment Failed!"
 }
 
-if [ ! -d "$SRCDIR/build" ] || [ "$ARG" == "--force" ]; then
+if [ ! -d "$SRCDIR/build" ] || [ "$ARG" = "--force" ]; then
 	build
 fi
 
