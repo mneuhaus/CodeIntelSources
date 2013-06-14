@@ -1,7 +1,6 @@
 #!/bin/sh
-
 cd "`dirname "$0"`"
-
+SRCDIR=`pwd`
 ARG="$1"
 
 check() {
@@ -23,15 +22,17 @@ update() {
 		git branch svn >/dev/null 2>&1
 		git push -u origin svn >/dev/null 2>&1
 
-		BEFORE=`git log | head -1`
 		git co svn && \
+		BEFORE=`git log | head -1`
 		git svn rebase || \
 		check "Please check the SVN rebase!"
 		AFTER=`git log | head -1`
 
 		if [ "$BEFORE" != "$AFTER" ]; then
+			echo ">>> [svn] Update! ($BEFORE vs. $AFTER)"
 			SVN_UPDATED_DONE="YES"
 		elif [ "$ARG" = "--force" ]; then
+			echo ">>> [svn] Forced Update!"
 			SVN_UPDATED_DONE="YES"
 		else
 			SVN_UPDATED_DONE="NO"
