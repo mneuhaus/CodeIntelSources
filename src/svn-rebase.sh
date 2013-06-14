@@ -13,10 +13,11 @@ check() {
 }
 
 update() {
-	if [ -f "$1/.git/authors" ]; then
+	REPO="$1"
+	if [ -f "$REPO/.git/authors" ]; then
 		echo "################################################################################"
-		echo ">>> [svn] Rebasing SVN $1..."
-		cd "$1"
+		echo ">>> [svn] Rebasing SVN $REPO..."
+		cd "$REPO"
 
 		# Switch to svn branch...
 		git branch svn >/dev/null 2>&1
@@ -24,8 +25,8 @@ update() {
 
 		git co svn && \
 		BEFORE=`git log | head -1`
-		git svn rebase || \
-		check "Please check the SVN rebase!"
+		# git svn rebase || \
+		# check "Please check the SVN rebase!"
 		AFTER=`git log | head -1`
 
 		if [ "$BEFORE" != "$AFTER" ]; then
@@ -44,7 +45,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> [pep8] Apply PEP8 to SVN $1..."
+			echo ">>> [pep8] Apply PEP8 to SVN $REPO..."
 			git branch pep8 >/dev/null 2>&1
 			git push -u origin pep8 >/dev/null 2>&1
 			git co pep8 && \
@@ -63,7 +64,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> [patched] Apply Patches over SVN of $1..."
+			echo ">>> [patched] Apply Patches over SVN of $REPO..."
 			git branch patched >/dev/null 2>&1
 			git push -u origin patched >/dev/null 2>&1
 			git co patched && \
@@ -71,14 +72,21 @@ update() {
 			check "Cannot switch to patched!"
 
 			# Apply patches here... (probably cannot be totally automated)
-			if [ -d "../patches/$1" ]; then
-				echo "Patching $1..."
-				find "../patches/$1" -type f -name "*.patch" -print0 | sort -z | xargs -0 -I {} sh -c "echo {}; patch -sup0 < {}"
-				find . \( -name '*.orig' -o -name "*.rej" \) -delete
-				cd "../patches/$1"
-					find . -type d -name '*' -mindepth 1 -print0 | xargs -0 -I {} sh -c "echo mkdir -p ../../$1/{}; mkdir -p ../../$1/{}"
-					find . -type f -name '*' -mindepth 2 -print0 | xargs -0 -I {} sh -c "echo cp {} ../../$1/{}; rm -f ../../$1/{}; cp {} ../../$1/{}"
-				cd "../../$1"
+			if [ -d "../patches/$REPO" ]; then
+				echo "Patching $REPO..."
+				# Some patches need to be ignored as they are already applied:
+				# patches/scintilla/bug91001_markdown_inline_style.patch
+				# patches/scintilla/bug92448_indicator_eof.patch
+				find "../patches/$REPO" -type f -name "*.patch" \
+					! -name "bug91001_markdown_inline_style.patch" \
+					! -name "bug92448_indicator_eof.patch" \
+					-print0 | sort -z | xargs -0 -I {} sh -c "echo {}; patch -sup0 < {}"
+				find . \( -name '*.orig' -o -name "*.rej" \) -exec rm {} \;
+				cd "../patches/$REPO"
+					find . -type d -name '*' -mindepth 1 -exec sh -c 'echo mkdir -p $2; mkdir -p $2' -- "{}" "$SRCDIR/$REPO/{}" \;
+					find . -type f -name '*' -mindepth 2 -exec sh -c 'echo cp $1 $2; rm -f $2; cp $1 $2' -- "{}" "$SRCDIR/$REPO/{}" \;
+				cd "$SRCDIR/$REPO"
+				git add -A
 				check "Please confirm patches were correctly applied (and stash newly created files if needed)."
 			fi
 
@@ -95,7 +103,7 @@ update() {
 			echo
 			echo "________________________________________________________________________________"
 			if [ "$PATCHES_DONE" = "YES" ]; then
-				echo ">>> [patched-pep8] Apply PEP8 to patched branch of $1..."
+				echo ">>> [patched-pep8] Apply PEP8 to patched branch of $REPO..."
 				git branch patched-pep8 >/dev/null 2>&1
 				git push -u origin patched-pep8 >/dev/null 2>&1
 				git co patched-pep8 && \
@@ -106,9 +114,9 @@ update() {
 				git push -f
 			else
 				if [ "$PEP8_DONE" = "YES" ]; then
-					echo ">>> [patched-pep8] Use PEP8 as the PEP8 patched branch of $1..."
+					echo ">>> [patched-pep8] Use PEP8 as the PEP8 patched branch of $REPO..."
 				else
-					echo ">>> [patched-pep8] Use SVN as the PEP8 patched branch of $1..."
+					echo ">>> [patched-pep8] Use SVN as the PEP8 patched branch of $REPO..."
 				fi
 				git branch patched-pep8 >/dev/null 2>&1
 				git push -u origin patched-pep8 >/dev/null 2>&1
@@ -123,7 +131,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> [master] Rebasing master of $1..."
+			echo ">>> [master] Rebasing master of $REPO..."
 			git co master && \
 			git rebase patched-pep8 || \
 			check "Please check the rebase!"
@@ -131,7 +139,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> [py3] Making py3 branch (Base python-modernize's 2to3 Python3 compatible branch) of $1..."
+			echo ">>> [py3] Making py3 branch (Base python-modernize's 2to3 Python3 compatible branch) of $REPO..."
 			git branch py3 >/dev/null 2>&1
 			git push -u origin py3 >/dev/null 2>&1
 			git co py3 && \
@@ -143,7 +151,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> [development] Rebasing development (python3 compatible branch) of $1..."
+			echo ">>> [development] Rebasing development (python3 compatible branch) of $REPO..."
 			git branch development >/dev/null 2>&1
 			git push -u origin development >/dev/null 2>&1
 			git co development && \
