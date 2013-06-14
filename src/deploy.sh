@@ -1,73 +1,75 @@
 #!/bin/sh
-DEPLOYMENT_PATH="../SublimeCodeIntel"
-
+cd "`dirname "$0"`"
+SRCDIR=`pwd`
 ARG="$1"
+
+DEPLOYMENTDIR="../SublimeCodeIntel"
 
 DEPLOYING=1
 . build.sh
 
 deploy() {
-	mkdir -p "$DEPLOYMENT_PATH/libs" && \
-	mkdir -p "$DEPLOYMENT_PATH/arch/_local_arch" && \
-	touch "$DEPLOYMENT_PATH/arch/_local_arch/__init__.py" && \
-
-	find "$DEPLOYMENT_PATH/libs" -type f -name '*.pyc' -delete && \
-
+	mkdir -p "$DEPLOYMENTDIR/libs" && \
+	mkdir -p "$DEPLOYMENTDIR/arch/_local_arch" && \
+	touch "$DEPLOYMENTDIR/arch/_local_arch/__init__.py" && \
+		\
+	find "$DEPLOYMENTDIR/libs" -type f -name '*.pyc' -exec rm "{}" \; && \
+		\
 	echo "Deploying CodeIntel2..." && \
-	cp -Rf "codeintel/lib/codeintel2" "$DEPLOYMENT_PATH/libs" && \
-	mkdir -p "$DEPLOYMENT_PATH/libs/codeintel2/lexers" && \
-
+	cp -Rf "$SRCDIR/codeintel/lib/codeintel2" "$DEPLOYMENTDIR/libs" && \
+	mkdir -p "$DEPLOYMENTDIR/libs/codeintel2/lexers" && \
+		\
 	echo "Deploying UDL..." && \
-	find "build/udl/udl" -type f -name '*.lexres' -exec cp -f {} "$DEPLOYMENT_PATH/libs/codeintel2/lexers" \; > /dev/null 2>&1 && \
-	find "build/udl/skel" -type f -name 'lang_*.py' -exec cp -f {} "$DEPLOYMENT_PATH/libs/codeintel2" \; > /dev/null 2>&1 && \
-
+	find "$BUILDDIR/udl/udl" -type f -name '*.lexres' -exec cp -f "{}" "$DEPLOYMENTDIR/libs/codeintel2/lexers" \; && \
+	find "$BUILDDIR/udl/skel" -type f -name 'lang_*.py' -exec cp -f "{}" "$DEPLOYMENTDIR/libs/codeintel2" \; && \
+		\
 	echo "Deploying SilverCity..." && \
-	cp -Rf "build/silvercity/PySilverCity/SilverCity" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "more4sublime/libs/_SilverCity.py" "$DEPLOYMENT_PATH/libs/SilverCity" && \
-	find "build" -type f -name "_SilverCity.$SO" -exec cp -f {} "$DEPLOYMENT_PATH/arch/_local_arch" \; > /dev/null 2>&1
-
+	cp -Rf "$BUILDDIR/silvercity/PySilverCity/SilverCity" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs/SilverCity" && \
+	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+		\
 	echo "Deploying ciElementTree..." && \
-	cp -f "more4sublime/libs/ciElementTree.py" "$DEPLOYMENT_PATH/libs" && \
-	find "build" -type f -name "ciElementTree.$SO" -exec cp -f {} "$DEPLOYMENT_PATH/arch/_local_arch" \; > /dev/null 2>&1
-
+	cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
+	find "$BUILDDIR/cElementTree" -type f -name "ciElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+		\
 	echo "Deploying Sgmlop..." && \
-	cp -f "more4sublime/libs/sgmlop.py" "$DEPLOYMENT_PATH/libs" && \
-	find "build" -type f -name "sgmlop.$SO" -exec cp -f {} "$DEPLOYMENT_PATH/arch/_local_arch" \; > /dev/null 2>&1
-
+	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
+	find "$BUILDDIR/sgmlop" -type f -name "sgmlop.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+		\
 	echo "Deploying Libs..." && \
-	cp -f "more4sublime/styles.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "smallstuff/winprocess.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/HTMLTreeParser.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/koCatalog.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/koDTD.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/koRNGElementTree.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/koSimpleLexer.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/koXMLDatasetInfo.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/koXMLTreeService.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_binary.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_doc.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_komodo.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_mozilla.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_other.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_prog.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_template.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/langinfo_tiny.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/process.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/textinfo.py" "$DEPLOYMENT_PATH/libs" && \
-	cp -f "python-sitelib/which.py" "$DEPLOYMENT_PATH/libs" && \
-
-	cp -Rf "chardet/chardet" "$DEPLOYMENT_PATH/libs" && \
-
-	cp -Rf "elementtree/elementtree" "$DEPLOYMENT_PATH/libs" && \
-
-	cp -Rf "inflector" "$DEPLOYMENT_PATH/libs" && \
-
+	cp -f "$SRCDIR/more4sublime/styles.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/smallstuff/winprocess.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/HTMLTreeParser.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/koCatalog.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/koDTD.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/koRNGElementTree.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/koSimpleLexer.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/koXMLDatasetInfo.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/koXMLTreeService.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_binary.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_doc.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_komodo.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_mozilla.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_other.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_prog.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_template.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/langinfo_tiny.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/process.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/textinfo.py" "$DEPLOYMENTDIR/libs" && \
+	cp -f "$SRCDIR/python-sitelib/which.py" "$DEPLOYMENTDIR/libs" && \
+		\
+	cp -Rf "$SRCDIR/chardet/chardet" "$DEPLOYMENTDIR/libs" && \
+		\
+	cp -Rf "$SRCDIR/elementtree/elementtree" "$DEPLOYMENTDIR/libs" && \
+		\
+	cp -Rf "$SRCDIR/inflector" "$DEPLOYMENTDIR/libs" && \
+		\
 	echo "Deployment Done!" || \
 	echo "Deployment Failed!"
 }
 
-if [ ! -d build ] || [ "$ARG" == "--force" ]; then
+if [ ! -d "$SRCDIR/build" ] || [ "$ARG" == "--force" ]; then
 	build
 fi
 
