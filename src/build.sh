@@ -90,7 +90,7 @@ build() {
 			echo "#define HAVE_WINDOWS_H 1" >> config.h && \
 			echo "#define SUPPORT_UCP" >> config.h && \
 			echo "#define SUPPORT_UTF8" >> config.h && \
-			nmake -f ../../patches/pcre/winpcre.mak clean libpcre.lib >> "$LOGDIR/PCRE.log" 2>&1 && \
+			nmake -f ../../winpcre.mak clean libpcre.lib >> "$LOGDIR/PCRE.log" 2>&1 && \
 		cd "$SRCDIR"
 	)) && \
 		\

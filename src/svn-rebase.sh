@@ -16,7 +16,7 @@ check() {
 update() {
 	if [ -f "$1/.git/authors" ]; then
 		echo "################################################################################"
-		echo ">>> Rebasing SVN $1..."
+		echo ">>> [svn] Rebasing SVN $1..."
 		cd "$1"
 
 		# Switch to svn branch...
@@ -43,7 +43,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> Apply PEP8 to SVN $1..."
+			echo ">>> [pep8] Apply PEP8 to SVN $1..."
 			git branch pep8 >/dev/null 2>&1
 			git push -u origin pep8 >/dev/null 2>&1
 			git co pep8 && \
@@ -62,7 +62,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> Apply Patches over SVN of $1..."
+			echo ">>> [patched] Apply Patches over SVN of $1..."
 			git branch patched >/dev/null 2>&1
 			git push -u origin patched >/dev/null 2>&1
 			git co patched && \
@@ -94,7 +94,7 @@ update() {
 			echo
 			echo "________________________________________________________________________________"
 			if [ "$PATCHES_DONE" = "YES" ]; then
-				echo ">>> Apply PEP8 to patched branch of $1..."
+				echo ">>> [patched-pep8] Apply PEP8 to patched branch of $1..."
 				git branch patched-pep8 >/dev/null 2>&1
 				git push -u origin patched-pep8 >/dev/null 2>&1
 				git co patched-pep8 && \
@@ -105,9 +105,9 @@ update() {
 				git push -f
 			else
 				if [ "$PEP8_DONE" = "YES" ]; then
-					echo ">>> Use PEP8 as the PEP8 patched branch of $1..."
+					echo ">>> [patched-pep8] Use PEP8 as the PEP8 patched branch of $1..."
 				else
-					echo ">>> Use SVN as the PEP8 patched branch of $1..."
+					echo ">>> [patched-pep8] Use SVN as the PEP8 patched branch of $1..."
 				fi
 				git branch patched-pep8 >/dev/null 2>&1
 				git push -u origin patched-pep8 >/dev/null 2>&1
@@ -122,7 +122,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> Rebasing master of $1..."
+			echo ">>> [master] Rebasing master of $1..."
 			git co master && \
 			git rebase patched-pep8 || \
 			check "Please check the rebase!"
@@ -130,7 +130,7 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> Making Python3 compatible branch of $1..."
+			echo ">>> [py3] Making py3 branch (Base python-modernize's 2to3 Python3 compatible branch) of $1..."
 			git branch py3 >/dev/null 2>&1
 			git push -u origin py3 >/dev/null 2>&1
 			git co py3 && \
@@ -138,20 +138,16 @@ update() {
 			check "Cannot switch to py3!"
 			python-modernize --compat-unicode --no-diffs -nwj 4 .
 			git commit -am "Python2 and Python3 support (using python-modernize's 2to3)"
+			git push -f
 
-			# Apply Python3 (py3) patches here... (probably cannot be totally automated)
-			if [ -d "../patches/py3/$1" ]; then
-				echo "Patching $1 for Python3..."
-				find "../patches/py3/$1" -type f -name '*.patch' -print0 | sort -z | xargs -0 -I {} sh -c "echo {}; patch -sup0 < {}"
-				find . \( -name '*.orig' -o -name '*.rej' \) -delete
-				cd "../patches/py3/$1"
-					find . -type d -name '*' -mindepth 1 -print0 | xargs -0 -I {} sh -c "echo mkdir -p ../../../$1/{}; mkdir -p ../../../$1/{}"
-					find . -type f -name '*' -mindepth 2 -print0 | xargs -0 -I {} sh -c "echo cp {} ../../../$1/{}; rm -f ../../../$1/{}; cp {} ../../../$1/{}"
-				cd "../../../$1"
-				check "Please confirm Python3 patches were correctly applied (and stash newly created files if needed)."
-			fi
-
-			git commit -am "Modernized code + py3 patches"
+			echo
+			echo "________________________________________________________________________________"
+			echo ">>> [development] Rebasing development (python3 compatible branch) of $1..."
+			git branch development >/dev/null 2>&1
+			git push -u origin development >/dev/null 2>&1
+			git co development && \
+			git rebase py3 || \
+			check "Please check the rebase!"
 			git push -f
 		fi
 
