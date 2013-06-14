@@ -10,6 +10,9 @@
 [submodule "src/cElementTree"]
 	path = src/cElementTree
 	url = git://github.com/SublimeCodeIntel/cElementTree.git
+[submodule "src/ciElementTree"]
+	path = src/ciElementTree
+	url = git://github.com/SublimeCodeIntel/ciElementTree.git
 [submodule "src/elementtree"]
 	path = src/elementtree
 	url = git://github.com/SublimeCodeIntel/elementtree.git

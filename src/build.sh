@@ -138,6 +138,15 @@ build() {
 		cd "$SRCDIR"
 	) && \
 		\
+	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/ciElementTree" ] || echo "Building ciElementTree..." && \
+		rm -rf "$BUILDDIR/ciElementTree" && \
+		cp -R "$SRCDIR/ciElementTree" "$BUILDDIR/ciElementTree" && \
+		cd "$BUILDDIR/ciElementTree" && \
+			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
+			$PYTHON setup.py build > "$LOGDIR/ciElementTree.log" 2>&1 && \
+		cd "$SRCDIR"
+	) && \
+		\
 	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/udl" ] || echo "Building UDL lexers..." && \
 		rm -rf "$BUILDDIR/udl" && \
 		cp -R "$SRCDIR/udl" "$BUILDDIR/udl" && \

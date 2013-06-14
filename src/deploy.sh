@@ -28,9 +28,13 @@ deploy() {
 	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs/SilverCity" && \
 	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
 		\
+	echo "Deploying cElementTree..." && \
+	cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
+	find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+		\
 	echo "Deploying ciElementTree..." && \
 	cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/cElementTree" -type f -name "ciElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+	find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
 		\
 	echo "Deploying Sgmlop..." && \
 	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
