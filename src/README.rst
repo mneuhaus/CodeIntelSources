@@ -6,50 +6,47 @@ Make sure to fetch all the code dependencies by running: ``git submodule update 
 For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 
-Under Max OS X:
+* Under Max OS X:
+	+ All needed dependencies come with Xcode.
 
-* All needed dependencies come with Xcode.
+	+ Go to the ``src`` directory and run::
 
-* Go to the ``src`` directory and run::
+		$ bash build.sh
 
-	$ bash build.sh
-
-	$ bash deploy
-
-
-Under Linux:
-
-* Dependencies likely to be packaged on your system. For Ubuntu/Debian-like distros, open a terminal and do::
-
-	$ sudo apt-get install g++
-
-	$ sudo apt-get install python-dev
-
-* Make sure the python development environment installed is for Python 2.6 (which is the one Sublime Text 2 uses)
-
-* Go to the ``src`` directory and run::
-
-	$ bash build.sh
-
-	$ bash deploy
+		$ bash deploy
 
 
-Under Windows:
+* Under Linux:
+	+ Dependencies likely to be packaged on your system. For Ubuntu/Debian-like distros, open a terminal and do::
 
-* Dependencies are:
-	+ Visual Studio (Tested with VS 2008)
+		$ sudo apt-get install g++
 
-	+ Python 2.6 installed at C:\Python26\python.exe (for x86) or C:\Python26-x64\python.exe (for amd64)
+		$ sudo apt-get install python-dev
 
-	+ Other dependencies are windows versions of ``bash``, ``patch`` and ``find``
+	+ Make sure the python development environment installed is for Python 2.6 (which is the one Sublime Text 2 uses)
 
-* Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
+	+ Go to the ``src`` directory and run::
 
-	$ bash build.sh
+		$ bash build.sh
 
-	$ bash deploy
+		$ bash deploy
 
-``build.sh`` will build the whole thing, and ``deploy.sh`` will copy the needed libraries and built things to the ``SublimeCodeIntel`` repository.
+
+* Under Windows:
+	+ Dependencies are:
+		- Visual Studio (Tested with VS 2008)
+
+		- Python 2.6 installed at C:\Python26\python.exe (for x86) or C:\Python26-x64\python.exe (for amd64)
+
+		- Other dependencies are windows versions of ``bash``, ``patch`` and ``find``
+
+	+ Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
+
+		$ bash build.sh
+
+		$ bash deploy
+
+	+ ``build.sh`` will build the whole thing, and ``deploy.sh`` will copy the needed libraries and built things to the ``SublimeCodeIntel`` repository.
 
 
 Repositories
