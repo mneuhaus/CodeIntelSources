@@ -34,7 +34,6 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 * Under Windows:
 	+ Dependencies are:
-
 		- Visual Studio (Tested with VS 2008)
 
 		- Python 2.6 installed at C:\Python26\python.exe (for x86) or C:\Python26-x64\python.exe (for amd64)
