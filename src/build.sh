@@ -12,11 +12,11 @@ if [ $OSTYPE = "linux-gnu" ]; then
 	BUILDDIR="$SRCDIR/build"
 	PYTHON="python"
 	if [ `uname -m` = "x86_64" ]; then
-		export CXXFLAGS="-fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export CFLAGS="-fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CXXFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 	else
-		export CXXFLAGS="-DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export CFLAGS="-DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CXXFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 	fi
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
 	SO="so"
