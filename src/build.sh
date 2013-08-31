@@ -3,13 +3,13 @@ cd "`dirname "$0"`"
 SRCDIR=`pwd`
 ARG="$1"
 
-GIT_BRANCH=""
+GIT_BRANCH="$(git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/\1/p')"
 
 if [ $OSTYPE = "linux-gnu" ]; then
 	# In Linux, Sublime Text's Python is compiled with UCS4:
 	echo "SublimeCodeIntel for Linux"
 	echo "=========================="
-	BUILDDIR="$SRCDIR/build"
+	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 	PYTHON="python"
 	if [ `uname -m` = "x86_64" ]; then
 		export CXXFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
@@ -23,7 +23,7 @@ if [ $OSTYPE = "linux-gnu" ]; then
 elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	echo "SublimeCodeIntel for Mac OS X"
 	echo "============================="
-	BUILDDIR="$SRCDIR/build"
+	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 	PYTHON="python"
 	export ARCHFLAGS="-arch i386 -arch x86_64"
 	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
@@ -35,12 +35,12 @@ else
 	if [[ "$FRAMEWORKDIR" = *"Framework64"* ]]; then
 		echo "SublimeCodeIntel for Windows (amd64)"
 		echo "===================================="
-		BUILDDIR="$SRCDIR/build"
+		BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 		PYTHON="C:/Python26-x64/python.exe"
 	else
 		echo "SublimeCodeIntel for Windows (x86)"
 		echo "=================================="
-		BUILDDIR="$SRCDIR/build"
+		BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 		PYTHON="C:/Python26/python.exe"
 	fi
 	ERR=" (You need to have Visual Studio and run this script from the Command Prompt. You also need the following tools: bash, patch, find and python 2.6 available from the command line.)"
@@ -61,63 +61,83 @@ build() {
 		rm -rf "$BUILDDIR"
 		rm -rf "$LOGDIR"
 	fi
-	rm -rf "$BUILDDIR"
 	mkdir -p "$LOGDIR"
+	touch "$LOGDIR/PCRE.log"
+	touch "$LOGDIR/Sgmlop.log"
+	touch "$LOGDIR/Scintilla.log"
+	touch "$LOGDIR/SilverCity.log"
+	touch "$LOGDIR/cElementTree.log"
+	touch "$LOGDIR/ciElementTree.log"
 
-	echo "Building..." && \
-	([ "$OSTYPE" = "" ] || ([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/pcre" ] || echo "Building PCRE (*nix)..." && \
-		rm -rf "$BUILDDIR/pcre" && \
-		cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
-		cd "$BUILDDIR/pcre" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
-			./configure --disable-shared --disable-dependency-tracking --enable-utf8 --enable-unicode-properties > "$LOGDIR/PCRE.log" 2>&1 && \
-			mkdir .libs && \
-			make >> "$LOGDIR/PCRE.log" 2>&1 && \
-		cd "$SRCDIR"
-	)) && \
+	echo "Building (${GIT_BRANCH:-unknown} branch)..." && \
+	([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
+	( \
+		([ "$OSTYPE" != "" ] && echo "Building PCRE (*nix)..." && \
+			([ -d "$BUILDDIR/pcre" ] || (
+				([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/pcre" && git checkout "$GIT_BRANCH") && \
+				rm -rf "$BUILDDIR/pcre" && \
+				cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
+				cd "$BUILDDIR/pcre" && \
+					mkdir .libs && \
+					./configure --disable-shared --disable-dependency-tracking --enable-utf8 --enable-unicode-properties > "$LOGDIR/PCRE.log" 2>&1 \
+			)) && \
+			cd "$BUILDDIR/pcre" && \
+				make >> "$LOGDIR/PCRE.log" 2>&1 && \
+			cd "$SRCDIR"
+		) || \
+			\
+		([ "$OSTYPE" = "" ] && echo "Building PCRE (win)..." && \
+			([ -d "$BUILDDIR/pcre" ] || (
+				([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/pcre" && git checkout "$GIT_BRANCH") && \
+				rm -rf "$BUILDDIR/pcre" && \
+				cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
+				cd "$BUILDDIR/pcre" && \
+					cp "Win32/pcre.h" "pcre.h" && \
+					cp "Win32/config.h" "config.h" && \
+					echo "#undef HAVE_DIRENT_H" >> config.h && \
+					echo "#undef HAVE_INTTYPES_H" >> config.h && \
+					echo "#undef HAVE_STDINT_H" >> config.h && \
+					echo "#undef HAVE_UNISTD_H" >> config.h && \
+					echo "#define HAVE_WINDOWS_H 1" >> config.h && \
+					echo "#define SUPPORT_UCP" >> config.h && \
+					echo "#define SUPPORT_UTF8" >> config.h \
+			)) && \
+			cd "$BUILDDIR/pcre" && \
+				nmake -f ../../winpcre.mak clean libpcre.lib >> "$LOGDIR/PCRE.log" 2>&1 && \
+			cd "$SRCDIR"
+		) \
+	) && \
 		\
-	([ "$OSTYPE" != "" ] || ([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/pcre" ] || echo "Building PCRE (win)..." && \
-		rm -rf "$BUILDDIR/pcre" && \
-		cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
-		cd "$BUILDDIR/pcre" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
-			cp "Win32/pcre.h" "pcre.h" && \
-			cp "Win32/config.h" "config.h" && \
-			echo "#undef HAVE_DIRENT_H" >> config.h && \
-			echo "#undef HAVE_INTTYPES_H" >> config.h && \
-			echo "#undef HAVE_STDINT_H" >> config.h && \
-			echo "#undef HAVE_UNISTD_H" >> config.h && \
-			echo "#define HAVE_WINDOWS_H 1" >> config.h && \
-			echo "#define SUPPORT_UCP" >> config.h && \
-			echo "#define SUPPORT_UTF8" >> config.h && \
-			nmake -f ../../winpcre.mak clean libpcre.lib >> "$LOGDIR/PCRE.log" 2>&1 && \
-		cd "$SRCDIR"
-	)) && \
-		\
-	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/sgmlop" ] || echo "Building Sgmlop..." && \
-		rm -rf "$BUILDDIR/sgmlop" && \
-		cp -R "$SRCDIR/sgmlop" "$BUILDDIR/sgmlop" && \
+	(echo "Building Sgmlop..." && \
+		([ -d "$BUILDDIR/sgmlop" ] || (
+			([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/sgmlop" && git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/sgmlop" && \
+			cp -R "$SRCDIR/sgmlop" "$BUILDDIR/sgmlop" \
+		)) && \
 		cd "$BUILDDIR/sgmlop" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			$PYTHON setup.py build > "$LOGDIR/Sgmlop.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \
 		\
-	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/scintilla" ] || echo "Patching Scintilla..." && \
-		rm -rf "$BUILDDIR/scintilla" && \
-		cp -R "$SRCDIR/scintilla" "$BUILDDIR/scintilla" && \
+	(echo "Patching Scintilla..." && \
+		([ -d "$BUILDDIR/scintilla" ] || (
+			([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/scintilla" && git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/scintilla" && \
+			cp -R "$SRCDIR/scintilla" "$BUILDDIR/scintilla" \
+		)) && \
 		cd "$BUILDDIR/scintilla" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			cd include && \
 				$PYTHON HFacer.py > "$LOGDIR/Scintilla.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \
 		\
-	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/silvercity" ] || echo "Building SilverCity..." && \
-		rm -rf "$BUILDDIR/silvercity" && \
-		cp -R "$SRCDIR/silvercity" "$BUILDDIR/silvercity" && \
+	(echo "Building SilverCity..." && \
+		([ -d "$BUILDDIR/silvercity" ] || (
+			([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/silvercity" && git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/silvercity" && \
+			cp -R "$SRCDIR/silvercity" "$BUILDDIR/silvercity" \
+		)) && \
 		cd "$BUILDDIR/silvercity" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			cp -f "$LIBPCRE" . && \
 			cd PySilverCity/Src && \
 				$PYTHON write_scintilla.py \
@@ -129,29 +149,36 @@ build() {
 		cd "$SRCDIR"
 	) && \
 		\
-	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/cElementTree" ] || echo "Building cElementTree..." && \
-		rm -rf "$BUILDDIR/cElementTree" && \
-		cp -R "$SRCDIR/cElementTree" "$BUILDDIR/cElementTree" && \
+	(echo "Building cElementTree..." && \
+		([ -d "$BUILDDIR/cElementTree" ] || (
+			([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/cElementTree" && git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/cElementTree" && \
+			cp -R "$SRCDIR/cElementTree" "$BUILDDIR/cElementTree" \
+		)) && \
 		cd "$BUILDDIR/cElementTree" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			$PYTHON setup.py build > "$LOGDIR/cElementTree.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \
 		\
-	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/ciElementTree" ] || echo "Building ciElementTree..." && \
-		rm -rf "$BUILDDIR/ciElementTree" && \
-		cp -R "$SRCDIR/ciElementTree" "$BUILDDIR/ciElementTree" && \
+	(echo "Building ciElementTree..." && \
+		([ -d "$BUILDDIR/ciElementTree" ] || (
+			([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/ciElementTree" && git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/ciElementTree" && \
+			cp -R "$SRCDIR/ciElementTree" "$BUILDDIR/ciElementTree" \
+		)) && \
 		cd "$BUILDDIR/ciElementTree" && \
-			([ "$GIT_BRANCH" = "" ] || git checkout "$GIT_BRANCH") && \
 			$PYTHON setup.py build > "$LOGDIR/ciElementTree.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \
 		\
-	([ "$ARG" != "--force" ] && [ -d "$BUILDDIR/udl" ] || echo "Building UDL lexers..." && \
-		rm -rf "$BUILDDIR/udl" && \
-		cp -R "$SRCDIR/udl" "$BUILDDIR/udl" && \
+	(echo "Building UDL lexers..." && \
+		([ -d "$BUILDDIR/udl" ] || (
+			([ "$GIT_BRANCH" = "" ] || cd "$SRCDIR/udl" && git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/udl" && \
+			cp -R "$SRCDIR/udl" "$BUILDDIR/udl" \
+		)) && \
 		cd "$BUILDDIR/udl" && \
-			cp "../../more4sublime/chromereg.py" . && \
+			cp "$SRCDIR/more4sublime/chromereg.py" . && \
 			find udl -type f -name '*-mainlex.udl' -exec $PYTHON luddite.py just_compile "{}" \; > "$LOGDIR/UDL.log" 2>&1 && \
 		cd "$SRCDIR"
 	) && \
