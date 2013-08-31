@@ -9,13 +9,14 @@ DEPLOYING=1
 . build.sh
 
 deploy() {
+	([ "$GIT_BRANCH" = "" ] || cd "$DEPLOYMENTDIR" && git checkout "$GIT_BRANCH") && \
 	mkdir -p "$DEPLOYMENTDIR/libs" && \
 	mkdir -p "$DEPLOYMENTDIR/arch/_local_arch" && \
 	touch "$DEPLOYMENTDIR/arch/_local_arch/__init__.py" && \
 		\
 	find "$DEPLOYMENTDIR/libs" -type f -name '*.pyc' -exec rm "{}" \; && \
 		\
-	echo "Deploying CodeIntel2..." && \
+	echo "Deploying CodeIntel2 (${GIT_BRANCH:-unknown} branch)..." && \
 	cp -Rf "$SRCDIR/codeintel/lib/codeintel2" "$DEPLOYMENTDIR/libs" && \
 	mkdir -p "$DEPLOYMENTDIR/libs/codeintel2/lexers" && \
 		\
