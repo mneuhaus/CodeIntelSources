@@ -22,6 +22,8 @@ deploy() {
 	cd "$SRCDIR/python-sitelib" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	cd "$SRCDIR/elementtree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	cd "$SRCDIR/inflector" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+		\
+	cd $SRCDIR && \
 	cd "$DEPLOYMENTDIR" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 		\
 	mkdir -p "$DEPLOYMENTDIR/libs" && \
@@ -40,7 +42,7 @@ deploy() {
 		\
 	echo "Deploying SilverCity..." && \
 	cp -Rf "$BUILDDIR/silvercity/PySilverCity/SilverCity" "$DEPLOYMENTDIR/libs" && \
-	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs/SilverCity" && \
+	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs" && \
 	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
 	echo "Deploying cElementTree..." && \
