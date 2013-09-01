@@ -79,7 +79,7 @@ build() {
 	touch "$LOGDIR/ciElementTree.log"
 
 	echo "Building (${GIT_BRANCH:-unknown} branch)..." && \
-	([ "$GIT_BRANCH" = "" && "$GIT_BRANCH" != "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	( \
 		([ "$OSTYPE" != "" ] && echo "Building PCRE (*nix)..." && \
 			([ -d "$BUILDDIR/pcre" ] || (
