@@ -6,17 +6,24 @@ ARG="$1"
 DEPLOYMENTDIR="../SublimeCodeIntel"
 
 DEPLOYING=1
-. build.sh
+source build.sh
+
+if [ "$ARG" == "--local" ]; then
+	ARCH="local_arch"
+fi
+
+PYVER="$(get_pyver)"
+ARCHDIR="_${ARCH}_${PYVER}"
 
 deploy() {
-	([ "$GIT_BRANCH" = "" ] || cd "$DEPLOYMENTDIR" && git checkout "$GIT_BRANCH") && \
+	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (cd "$DEPLOYMENTDIR" && git checkout "$GIT_BRANCH")) && \
 	mkdir -p "$DEPLOYMENTDIR/libs" && \
-	mkdir -p "$DEPLOYMENTDIR/arch/_local_arch" && \
-	touch "$DEPLOYMENTDIR/arch/_local_arch/__init__.py" && \
+	mkdir -p "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
+	touch "$DEPLOYMENTDIR/arch/$ARCHDIR/__init__.py" && \
 		\
 	find "$DEPLOYMENTDIR/libs" -type f -name '*.pyc' -exec rm "{}" \; && \
 		\
-	echo "Deploying CodeIntel2 (${GIT_BRANCH:-unknown} branch)..." && \
+	echo "Deploying CodeIntel2 (${GIT_BRANCH:-unknown} branch) [$ARCHDIR]..." && \
 	cp -Rf "$SRCDIR/codeintel/lib/codeintel2" "$DEPLOYMENTDIR/libs" && \
 	mkdir -p "$DEPLOYMENTDIR/libs/codeintel2/lexers" && \
 		\
@@ -27,19 +34,19 @@ deploy() {
 	echo "Deploying SilverCity..." && \
 	cp -Rf "$BUILDDIR/silvercity/PySilverCity/SilverCity" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs/SilverCity" && \
-	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
 		\
 	echo "Deploying cElementTree..." && \
 	cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+	find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
 		\
 	echo "Deploying ciElementTree..." && \
 	cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+	find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
 		\
 	echo "Deploying Sgmlop..." && \
 	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/sgmlop" -type f -name "sgmlop.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/_local_arch" \; && \
+	find "$BUILDDIR/sgmlop" -type f -name "sgmlop.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
 		\
 	echo "Deploying Libs..." && \
 	cp -f "$SRCDIR/more4sublime/styles.py" "$DEPLOYMENTDIR/libs" && \
