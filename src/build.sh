@@ -199,7 +199,7 @@ build() {
 
 
 get_pyver() {
-	$PYTHON -c "import sys; sys.stdout.write('py%s' % sys.version_info[0])" 2> /dev/null
+	$PYTHON -c "import sys; sys.stdout.write('%s.%s' % sys.version_info[:2])" 2> /dev/null
 }
 
 if [ ! $DEPLOYING ]; then
