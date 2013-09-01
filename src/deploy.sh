@@ -9,14 +9,15 @@ DEPLOYING=1
 source build.sh
 
 PYVER="$(get_pyver)"
-ARCHDIR="_${ARCH}_${PYVER}"
+ARCHDIR="_${ARCH}_py${PYVER//./}"
 
 if [ "$ARG" != "--dist" ]; then
 	ARCHDIR="_local_arch"
 fi
 
+
 deploy() {
-	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (cd "$DEPLOYMENTDIR" && git checkout "$GIT_BRANCH")) && \
+	cd "$DEPLOYMENTDIR" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	mkdir -p "$DEPLOYMENTDIR/libs" && \
 	mkdir -p "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 	touch "$DEPLOYMENTDIR/arch/$ARCHDIR/__init__.py" && \
@@ -76,6 +77,8 @@ deploy() {
 	cp -Rf "$SRCDIR/elementtree/elementtree" "$DEPLOYMENTDIR/libs" && \
 		\
 	cp -Rf "$SRCDIR/inflector" "$DEPLOYMENTDIR/libs" && \
+		\
+	cd $SRCDIR && \
 		\
 	echo "Deployment Done!" || \
 	echo "Deployment Failed!"
