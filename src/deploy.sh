@@ -11,7 +11,7 @@ source build.sh
 PYVER="$(get_pyver)"
 ARCHDIR="_${ARCH}_${PYVER}"
 
-if [ "$ARG" == "--local" ]; then
+if [ "$ARG" != "--dist" ]; then
 	ARCHDIR="_local_arch"
 fi
 
