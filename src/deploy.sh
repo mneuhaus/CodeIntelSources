@@ -8,15 +8,8 @@ DEPLOYMENTDIR="../SublimeCodeIntel"
 DEPLOYING=1
 source build.sh
 
-PYVER="$(get_pyver)"
-ARCHDIR="_${ARCH}_py${PYVER//./}"
-
-if [ "$ARG" != "--dist" ]; then
-	ARCHDIR="_local_arch"
-fi
-
-
 deploy() {
+	echo "Deploying [$ARCH, python v$PYVER -> $ARCHDIR] (${GIT_BRANCH:-unknown} branch)..." && \
 	cd "$SRCDIR/codeintel" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	cd "$SRCDIR/smallstuff" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	cd "$SRCDIR/python-sitelib" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
@@ -32,7 +25,7 @@ deploy() {
 		\
 	find "$DEPLOYMENTDIR/libs" -type f -name '*.pyc' -exec rm "{}" \; && \
 		\
-	echo "Deploying CodeIntel2 (${GIT_BRANCH:-unknown} branch) [$ARCHDIR]..." && \
+	echo "Deploying CodeIntel2..." && \
 	cp -Rf "$SRCDIR/codeintel/lib/codeintel2" "$DEPLOYMENTDIR/libs" && \
 	mkdir -p "$DEPLOYMENTDIR/libs/codeintel2/lexers" && \
 		\

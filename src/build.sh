@@ -65,6 +65,17 @@ else
 fi
 LOGDIR="$BUILDDIR/logs"
 
+get_pyver() {
+	$PYTHON -c "import sys; sys.stdout.write('%s.%s' % sys.version_info[:2])" 2> /dev/null
+}
+
+PYVER="$(get_pyver)"
+ARCHDIR="_${ARCH}_py${PYVER//./}"
+
+if [ "$ARG" != "--dist" ]; then
+	ARCHDIR="_local_arch"
+fi
+
 build() {
 	if [ "$ARG" = "--force" ]; then
 		rm -rf "$BUILDDIR"
@@ -78,7 +89,7 @@ build() {
 	touch "$LOGDIR/cElementTree.log"
 	touch "$LOGDIR/ciElementTree.log"
 
-	echo "Building (${GIT_BRANCH:-unknown} branch)..." && \
+	echo "Building [$ARCH, python v$PYVER] (${GIT_BRANCH:-unknown} branch)..." && \
 	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 	( \
 		([ "$OSTYPE" != "" ] && echo "Building PCRE (*nix)..." && \
@@ -195,11 +206,6 @@ build() {
 		find "build" -type f -name "*.$SO" -exec strip "{}" \; > /dev/null 2>&1
 		find "build" -type f -name "*.$SO" -exec strip -S "{}" \; > /dev/null 2>&1
 	fi
-}
-
-
-get_pyver() {
-	$PYTHON -c "import sys; sys.stdout.write('%s.%s' % sys.version_info[:2])" 2> /dev/null
 }
 
 if [ ! $DEPLOYING ]; then
