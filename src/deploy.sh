@@ -35,19 +35,19 @@ deploy() {
 	echo "Deploying SilverCity..." && \
 	cp -Rf "$BUILDDIR/silvercity/PySilverCity/SilverCity" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs/SilverCity" && \
-	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
+	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
 	echo "Deploying cElementTree..." && \
 	cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
+	find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
 	echo "Deploying ciElementTree..." && \
 	cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
+	find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
 	echo "Deploying Sgmlop..." && \
 	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/sgmlop" -type f -name "sgmlop.$SO" -exec cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" \; && \
+	find "$BUILDDIR/sgmlop" -type f -name "sgmlop.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
 	echo "Deploying Libs..." && \
 	cp -f "$SRCDIR/more4sublime/styles.py" "$DEPLOYMENTDIR/libs" && \
