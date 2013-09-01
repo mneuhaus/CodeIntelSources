@@ -8,12 +8,12 @@ DEPLOYMENTDIR="../SublimeCodeIntel"
 DEPLOYING=1
 source build.sh
 
-if [ "$ARG" == "--local" ]; then
-	ARCH="local_arch"
-fi
-
 PYVER="$(get_pyver)"
 ARCHDIR="_${ARCH}_${PYVER}"
+
+if [ "$ARG" == "--local" ]; then
+	ARCHDIR="_local_arch"
+fi
 
 deploy() {
 	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (cd "$DEPLOYMENTDIR" && git checkout "$GIT_BRANCH")) && \
