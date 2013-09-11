@@ -55,7 +55,7 @@ update() {
 			check "Cannot switch to pep8!"
 			autopep8 -virj 4 .
 			BEFORE=`git log --format="%H" | head -1`
-			git commit -am "PEP 8 applied to SVN trunk"
+			git commit -am "*** PEP 8 applied to SVN trunk ***"
 			AFTER=`git log --format="%H" | head -1`
 			if [ "$BEFORE" != "$AFTER" ]; then
 				PEP8_DONE="YES"
@@ -93,7 +93,7 @@ update() {
 			fi
 
 			BEFORE=`git log --format="%H" | head -1`
-			git commit -am "OpenKomodo patches applied to SVN trunk"
+			git commit -am "*** OpenKomodo patches applied to SVN trunk ***"
 			AFTER=`git log --format="%H" | head -1`
 			if [ "$BEFORE" != "$AFTER" ]; then
 				PATCHES_DONE="YES"
@@ -114,7 +114,7 @@ update() {
 				check "Cannot switch to patched-pep8!"
 				autopep8 -virj 4 . || \
 				check "Cannot autopep8!"
-				git commit -am "PEP 8 applied to SVN trunk + OpenKomodo patches"
+				git commit -am "*** PEP 8 applied to SVN trunk + OpenKomodo patches ***"
 				git push -f
 			else
 				if [ "$PEP8_DONE" = "YES" ]; then
@@ -129,7 +129,7 @@ update() {
 				git reset --hard pep8 || \
 				check "Cannot switch to patched-pep8!"
 				if [ "$PEP8_DONE" = "YES" ]; then
-					git commit --amend -m "PEP 8 applied to SVN trunk + OpenKomodo patches"
+					git commit --amend -m "*** PEP 8 applied to SVN trunk + OpenKomodo patches ***"
 				fi
 				git push -f
 			fi
@@ -154,7 +154,7 @@ update() {
 			2to3 --no-diffs -nwj4 . || \
 			check "Cannot 2to3!"
 			# python-modernize --compat-unicode --no-diffs -nwj 4 .
-			git commit -am "Python3 support (using 2to3)"
+			git commit -am "*** Python3 support (using 2to3) ***"
 			git push -f
 
 			echo
