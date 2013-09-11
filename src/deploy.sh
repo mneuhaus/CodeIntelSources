@@ -46,10 +46,11 @@ deploy() {
 				\
 			echo "Deploying ciElementTree..." && \
 			cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-			find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
+			find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR"
 		)) || \
 		([ "${PYVER:0:1}" = "3" ] && (
 			echo "Deploying iElementTree..." && \
+			cp -f "$SRCDIR/more4sublime/libs/_ielementtree.py" "$DEPLOYMENTDIR/libs" && \
 			cp -f "$SRCDIR/more4sublime/libs/iElementTree.py" "$DEPLOYMENTDIR/libs" && \
 			find "$BUILDDIR/iElementTree" -type f -name "iElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR"
 		)) \
