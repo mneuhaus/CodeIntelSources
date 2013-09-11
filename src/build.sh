@@ -88,6 +88,7 @@ build() {
 	touch "$LOGDIR/SilverCity.log"
 	touch "$LOGDIR/cElementTree.log"
 	touch "$LOGDIR/ciElementTree.log"
+	touch "$LOGDIR/iElementTree.log"
 
 	echo "Building [$ARCH, python v$PYVER] (${GIT_BRANCH:-unknown} branch)..." && \
 	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
@@ -128,16 +129,6 @@ build() {
 		) \
 	) && \
 		\
-	(echo "Building Sgmlop..." && \
-		([ -d "$BUILDDIR/sgmlop" ] || (
-			cd "$SRCDIR/sgmlop" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-			rm -rf "$BUILDDIR/sgmlop" && \
-			cp -R "$SRCDIR/sgmlop" "$BUILDDIR/sgmlop" \
-		)) && \
-		cd "$BUILDDIR/sgmlop" && \
-			$PYTHON setup.py build > "$LOGDIR/Sgmlop.log" 2>&1
-	) && \
-		\
 	(echo "Patching Scintilla..." && \
 		([ -d "$BUILDDIR/scintilla" ] || (
 			cd "$SRCDIR/scintilla" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
@@ -166,24 +157,48 @@ build() {
 			$PYTHON setup.py build >> "$LOGDIR/SilverCity.log" 2>&1
 	) && \
 		\
-	(echo "Building cElementTree..." && \
-		([ -d "$BUILDDIR/cElementTree" ] || (
-			cd "$SRCDIR/cElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-			rm -rf "$BUILDDIR/cElementTree" && \
-			cp -R "$SRCDIR/cElementTree" "$BUILDDIR/cElementTree" \
-		)) && \
-		cd "$BUILDDIR/cElementTree" && \
-			$PYTHON setup.py build > "$LOGDIR/cElementTree.log" 2>&1
+	( \
+		([ "${PYVER:0:1}" = "2" ] && ( \
+			(echo "Building cElementTree..." && \
+				([ -d "$BUILDDIR/cElementTree" ] || (
+					cd "$SRCDIR/cElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+					rm -rf "$BUILDDIR/cElementTree" && \
+					cp -R "$SRCDIR/cElementTree" "$BUILDDIR/cElementTree" \
+				)) && \
+				cd "$BUILDDIR/cElementTree" && \
+					$PYTHON setup.py build > "$LOGDIR/cElementTree.log" 2>&1
+			) && \
+			(echo "Building ciElementTree..." && \
+				([ -d "$BUILDDIR/ciElementTree" ] || (
+					cd "$SRCDIR/ciElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+					rm -rf "$BUILDDIR/ciElementTree" && \
+					cp -R "$SRCDIR/ciElementTree" "$BUILDDIR/ciElementTree" \
+				)) && \
+				cd "$BUILDDIR/ciElementTree" && \
+					$PYTHON setup.py build > "$LOGDIR/ciElementTree.log" 2>&1
+			) \
+		)) || \
+		([ "${PYVER:0:1}" = "3" ] && ( \
+			(echo "Building iElementTree..." && \
+				([ -d "$BUILDDIR/iElementTree" ] || (
+					cd "$SRCDIR/iElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+					rm -rf "$BUILDDIR/iElementTree" && \
+					cp -R "$SRCDIR/iElementTree" "$BUILDDIR/iElementTree" \
+				)) && \
+				cd "$BUILDDIR/iElementTree" && \
+					$PYTHON setup.py build > "$LOGDIR/iElementTree.log" 2>&1
+			) \
+		)) \
 	) && \
 		\
-	(echo "Building ciElementTree..." && \
-		([ -d "$BUILDDIR/ciElementTree" ] || (
-			cd "$SRCDIR/ciElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-			rm -rf "$BUILDDIR/ciElementTree" && \
-			cp -R "$SRCDIR/ciElementTree" "$BUILDDIR/ciElementTree" \
+	(echo "Building Sgmlop..." && \
+		([ -d "$BUILDDIR/sgmlop" ] || (
+			cd "$SRCDIR/sgmlop" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+			rm -rf "$BUILDDIR/sgmlop" && \
+			cp -R "$SRCDIR/sgmlop" "$BUILDDIR/sgmlop" \
 		)) && \
-		cd "$BUILDDIR/ciElementTree" && \
-			$PYTHON setup.py build > "$LOGDIR/ciElementTree.log" 2>&1
+		cd "$BUILDDIR/sgmlop" && \
+			$PYTHON setup.py build > "$LOGDIR/Sgmlop.log" 2>&1
 	) && \
 		\
 	(echo "Building UDL lexers..." && \

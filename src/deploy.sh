@@ -38,13 +38,22 @@ deploy() {
 	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs" && \
 	find "$BUILDDIR/silvercity" -type f -name "_SilverCity.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
-	echo "Deploying cElementTree..." && \
-	cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
-		\
-	echo "Deploying ciElementTree..." && \
-	cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
+	( \
+		([ "${PYVER:0:1}" = "2" ] && (
+			echo "Deploying cElementTree..." && \
+			cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
+			find "$BUILDDIR/cElementTree" -type f -name "cElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
+				\
+			echo "Deploying ciElementTree..." && \
+			cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
+			find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
+		)) || \
+		([ "${PYVER:0:1}" = "3" ] && (
+			echo "Deploying iElementTree..." && \
+			cp -f "$SRCDIR/more4sublime/libs/iElementTree.py" "$DEPLOYMENTDIR/libs" && \
+			find "$BUILDDIR/iElementTree" -type f -name "iElementTree.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR"
+		)) \
+	) && \
 		\
 	echo "Deploying Sgmlop..." && \
 	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
@@ -75,7 +84,7 @@ deploy() {
 		\
 	cp -Rf "$SRCDIR/chardet/chardet" "$DEPLOYMENTDIR/libs" && \
 		\
-	cp -Rf "$SRCDIR/elementtree/elementtree" "$DEPLOYMENTDIR/libs" && \
+	cp -Rf "$SRCDIR/elementtree/elementtree" "$DEPLOYMENTDIR/libs"
 		\
 	cp -Rf "$SRCDIR/inflector" "$DEPLOYMENTDIR/libs" && \
 		\
