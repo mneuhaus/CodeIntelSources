@@ -181,7 +181,7 @@ build() {
 		([ "${PYVER:0:1}" = "3" ] && ( \
 			(echo "Building iElementTree..." && \
 				([ -d "$BUILDDIR/iElementTree" ] || (
-					cd "$SRCDIR/iElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+					cd "$SRCDIR/iElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "master") && \
 					rm -rf "$BUILDDIR/iElementTree" && \
 					cp -R "$SRCDIR/iElementTree" "$BUILDDIR/iElementTree" \
 				)) && \
