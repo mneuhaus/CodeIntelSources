@@ -139,14 +139,15 @@ update() {
 
 			echo
 			echo "________________________________________________________________________________"
-			echo ">>> [py3] Making py3 branch (Base python-modernize's 2to3 Python3 compatible branch) of $REPO..."
+			echo ">>> [py3] Making py3 branch (Base 2to3's Python3 compatible branch) of $REPO..."
 			git branch py3 >/dev/null 2>&1
 			git push -u origin py3 >/dev/null 2>&1
 			git co py3 && \
 			git reset --hard master || \
 			check "Cannot switch to py3!"
-			python-modernize --compat-unicode --no-diffs -nwj 4 .
-			git commit -am "Python2 and Python3 support (using python-modernize's 2to3)"
+			2to3 --no-diffs -nwj4 .
+			# python-modernize --compat-unicode --no-diffs -nwj 4 .
+			git commit -am "Python2 and Python3 support (using 2to3)"
 			git push -f
 
 			echo
