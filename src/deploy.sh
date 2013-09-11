@@ -62,7 +62,18 @@ deploy() {
 	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
 	find "$BUILDDIR/sgmlop" -type f -name "sgmlop.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
 		\
-	echo "Deploying Libs..." && \
+	( \
+		([ "${PYVER:0:1}" = "2" ] && (
+			echo "Deploying Chardet..." && \
+			cp -Rf "$SRCDIR/chardet/chardet" "$DEPLOYMENTDIR/libs" \
+		)) || \
+		([ "${PYVER:0:1}" = "3" ] && (
+			echo "Deploying Python 3 Chardet..." && \
+			cp -Rf "$SRCDIR/python3-chardet/chardet" "$DEPLOYMENTDIR/libs" \
+		)) \
+	) && \
+		\
+	echo "Deploying Helper Libs..." && \
 	cp -f "$SRCDIR/more4sublime/styles.py" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/smallstuff/winprocess.py" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/python-sitelib/HTMLTreeParser.py" "$DEPLOYMENTDIR/libs" && \
@@ -84,8 +95,6 @@ deploy() {
 	cp -f "$SRCDIR/python-sitelib/process.py" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/python-sitelib/textinfo.py" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/python-sitelib/which.py" "$DEPLOYMENTDIR/libs" && \
-		\
-	cp -Rf "$SRCDIR/chardet/chardet" "$DEPLOYMENTDIR/libs" && \
 		\
 	cp -Rf "$SRCDIR/elementtree/elementtree" "$DEPLOYMENTDIR/libs"
 		\
