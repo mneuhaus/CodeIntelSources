@@ -46,3 +46,6 @@
 [submodule "src/iElementTree"]
 	path = src/iElementTree
 	url = git://github.com/SublimeCodeIntel/iElementTree.git
+[submodule "src/python3-chardet"]
+	path = src/python3-chardet
+	url = https://github.com/bsidhom/python3-chardet.git
