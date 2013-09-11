@@ -25,8 +25,10 @@ update() {
 
 		git co svn && \
 		BEFORE=`git log | head -1`
-		# git svn rebase || \
-		# check "Please check the SVN rebase!"
+		if [ "$ARG" = "--svn" ]; then
+			git svn rebase || \
+			check "Please check the SVN rebase!"
+		fi
 		AFTER=`git log | head -1`
 
 		if [ "$BEFORE" != "$AFTER" ]; then
