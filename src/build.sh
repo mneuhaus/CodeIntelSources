@@ -42,9 +42,9 @@ elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	SO="so"
 else
 	if [ "$VS100COMNTOOLS" = "" ]; then
-		VS100COMNTOOLS=$VS90COMNTOOLS
+		VS100COMNTOOLS="$VS90COMNTOOLS"
 	else
-		VS90COMNTOOLS=$VS100COMNTOOLS
+		VS90COMNTOOLS="$VS100COMNTOOLS"
 	fi
 	if [[ "$FRAMEWORKDIR" = *"Framework64"* ]]; then
 		echo "SublimeCodeIntel for Windows (amd64)"
