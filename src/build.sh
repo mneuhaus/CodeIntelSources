@@ -25,6 +25,7 @@ if [ $OSTYPE = "linux-gnu" ]; then
 		ARCH="linux_libcpp6_x86"
 	fi
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
+	LIBPCRE_H="$BUILDDIR/pcre/pcre.h"
 	SO="so"
 elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	echo "SublimeCodeIntel for Mac OS X"
@@ -37,6 +38,7 @@ elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	export LDFLAGS="-arch i386 -arch x86_64"
 	ARCH="macosx_universal"
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
+	LIBPCRE_H="$BUILDDIR/pcre/pcre.h"
 	SO="so"
 else
 	if [[ "$FRAMEWORKDIR" = *"Framework64"* ]]; then
@@ -60,6 +62,7 @@ else
 	export CXXFLAGS="-I $BUILDDIR/pcre $CXXFLAGS"
 	export CFLAGS="-I $BUILDDIR/pcre $CFLAGS"
 	LIBPCRE="$BUILDDIR/pcre/libpcre.lib"
+	LIBPCRE_H="$BUILDDIR/pcre/pcre.h"
 	OSTYPE=""
 	SO="pyd"
 fi
@@ -124,7 +127,7 @@ build() {
 					echo "#define SUPPORT_UTF8" >> config.h \
 			)) && \
 			cd "$BUILDDIR/pcre" && \
-				nmake -f ../../winpcre.mak clean libpcre.lib >> "$LOGDIR/PCRE.log" 2>&1 && \
+				nmake -f $SRCDIR/winpcre.mak clean libpcre.lib >> "$LOGDIR/PCRE.log" 2>&1 && \
 			cd "$SRCDIR"
 		) \
 	) && \
@@ -148,6 +151,7 @@ build() {
 		)) && \
 		cd "$BUILDDIR/silvercity" && \
 			cp -f "$LIBPCRE" . && \
+			cp -f "$LIBPCRE_H" "../scintilla/include/" && \
 			cd PySilverCity/Src && \
 				$PYTHON write_scintilla.py \
 					../../../scintilla/include/ \
