@@ -14,7 +14,7 @@ if [ $OSTYPE = "linux-gnu" ]; then
 	echo "SublimeCodeIntel for Linux"
 	echo "=========================="
 	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
-	PYTHON="python"
+	PYTHON="${PYTHON:-python}"
 	if [ `uname -m` = "x86_64" ]; then
 		export CXXFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 		export CFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
@@ -30,7 +30,7 @@ elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	echo "SublimeCodeIntel for Mac OS X"
 	echo "============================="
 	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
-	PYTHON="python"
+	PYTHON="${PYTHON:-python}"
 	export ARCHFLAGS="-arch i386 -arch x86_64"
 	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
 	export CFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
@@ -43,19 +43,19 @@ else
 		echo "SublimeCodeIntel for Windows (amd64)"
 		echo "===================================="
 		BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
-		PYTHON="C:/Python26-x64/python.exe"
+		PYTHON="${PYTHON:-C:/Python26-x64/python.exe}"
 		ARCH="win64"
 	else
 		echo "SublimeCodeIntel for Windows (x86)"
 		echo "=================================="
 		BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
-		PYTHON="C:/Python26/python.exe"
+		PYTHON="${PYTHON:-C:/Python26/python.exe}"
 		ARCH="win32"
 	fi
 	ERR=" (You need to have Visual Studio and run this script from the Command Prompt. You also need the following tools: bash, patch, find and python 2.6 available from the command line.)"
 	if [ ! -f "$PYTHON" ]; then
 		ERR="$ERR Python must exist at $PYTHON"
-		PYTHON="python"
+		PYTHON="${PYTHON:-python}"
 	fi
 	export CXXFLAGS="-I $BUILDDIR/pcre $CXXFLAGS"
 	export CFLAGS="-I $BUILDDIR/pcre $CFLAGS"
