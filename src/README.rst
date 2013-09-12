@@ -33,22 +33,38 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 
 * Under Windows:
-	+ Dependencies are:
-		- Visual Studio (Tested with VS 2008)
+	+ Dependencies for Sublime Text 2 compatible plugin are:
+
+		- Visual Studio 2008
 
 		- Python 2.6 installed at C:\Python26\python.exe (for x86) or C:\Python26-x64\python.exe (for amd64)
 
 		- Other dependencies are windows versions of ``bash``, ``patch`` and ``find``
 
+	+ Dependencies for Sublime Text 3 compatible plugin are:
+
+		- Visual Studio 2008 or 2010 (Tested with VS 2008)
+
+		- Python 3.3 installed at C:\Python33\python.exe (for x86) or C:\Python33-x64\python.exe (for amd64)
+
+		- If using Visual Studio 2008, it requires to do the following:
+
+			- Set the environment variable:
+
+				> SET VS100COMNTOOLS=%VS90COMNTOOLS%
+
+			- Use a patched version of distutils (to have the standard libraries linked statically)::
+
+				Edit ``C:\Python33\Lib\distutils\msvc9compiler.py`` and change all instances of ``/MD`` to ``/MT``.
+
 	+ Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
 
 		> bash build.sh
 
-		> bash deploy
+		> bash deploy.sh
 
 	+ For other example, to build in 64 bit Windows, using Python 3.3, run::
 
-		> SET VS100COMNTOOLS=%VS90COMNTOOLS%
 		> bash -c "PYTHON=C:/Python33-x64/python.exe ./build.sh"
 
 	+ ``build.sh`` will build the whole thing, and ``deploy.sh`` will copy the needed libraries and built things to the ``SublimeCodeIntel`` repository.
