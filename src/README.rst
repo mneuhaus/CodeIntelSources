@@ -42,9 +42,13 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 	+ Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
 
-		$ bash build.sh
+		> bash build.sh
 
-		$ bash deploy
+		> bash deploy
+
+	+ For other example, to build in 64 bit Windows, using Python 3.3, run::
+
+		> bash -c "PYTHON=C:/Python33-x64/python.exe ./build.sh"
 
 	+ ``build.sh`` will build the whole thing, and ``deploy.sh`` will copy the needed libraries and built things to the ``SublimeCodeIntel`` repository.
 
