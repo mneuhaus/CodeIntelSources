@@ -48,6 +48,7 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 	+ For other example, to build in 64 bit Windows, using Python 3.3, run::
 
+		> SET VS100COMNTOOLS=%VS90COMNTOOLS%
 		> bash -c "PYTHON=C:/Python33-x64/python.exe ./build.sh"
 
 	+ ``build.sh`` will build the whole thing, and ``deploy.sh`` will copy the needed libraries and built things to the ``SublimeCodeIntel`` repository.
