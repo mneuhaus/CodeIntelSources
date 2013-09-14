@@ -41,6 +41,15 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 		- Other dependencies are windows versions of ``bash``, ``patch`` and ``find``
 
+		- Use a patched version of distutils (to have the standard libraries linked statically)::
+
+			Edit a few files and change all instances of ``/MD`` to ``/MT``:
+
+				> sed -i'' 's#/MD#/MT#g' C:\Python26\Lib\distutils\msvccompiler.py
+				> sed -i'' 's#/MD#/MT#g' C:\Python26\Lib\distutils\msvc9compiler.py
+				> sed -i'' 's#/MD#/MT#g' C:\Python26-x64\Lib\distutils\msvccompiler.py
+				> sed -i'' 's#/MD#/MT#g' C:\Python26-x64\Lib\distutils\msvc9compiler.py
+
 	+ Dependencies for Sublime Text 3 compatible plugin are:
 
 		- Visual Studio 2008 or 2010 (Tested with VS 2008)
@@ -53,9 +62,14 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 				> SET VS100COMNTOOLS=%VS90COMNTOOLS%
 
-			- Use a patched version of distutils (to have the standard libraries linked statically)::
+		- Use a patched version of distutils (to have the standard libraries linked statically)::
 
-				Edit ``C:\Python33\Lib\distutils\msvc9compiler.py`` and change all instances of ``/MD`` to ``/MT``.
+			Edit a few files and change all instances of ``/MD`` to ``/MT``:
+
+				> sed -i'' 's#/MD#/MT#g' C:\Python33\Lib\distutils\msvccompiler.py
+				> sed -i'' 's#/MD#/MT#g' C:\Python33\Lib\distutils\msvc9compiler.py
+				> sed -i'' 's#/MD#/MT#g' C:\Python33-x64\Lib\distutils\msvccompiler.py
+				> sed -i'' 's#/MD#/MT#g' C:\Python33-x64\Lib\distutils\msvc9compiler.py
 
 	+ Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
 

@@ -18,10 +18,12 @@ if [ $OSTYPE = "linux-gnu" ]; then
 	if [ `uname -m` = "x86_64" ]; then
 		export CXXFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 		export CFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export LDFLAGS="-static-libstdc++ -static-libgcc"
 		ARCH="linux_libcpp6_x86_64"
 	else
 		export CXXFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
 		export CFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export LDFLAGS="-static-libstdc++ -static-libgcc"
 		ARCH="linux_libcpp6_x86"
 	fi
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
@@ -33,8 +35,8 @@ elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 	PYTHON="${PYTHON:-python}"
 	export ARCHFLAGS="-arch i386 -arch x86_64"
-	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
-	export CFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre"
+	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre -mmacosx-version-min=10.6"
+	export CFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre -mmacosx-version-min=10.6"
 	export LDFLAGS="-arch i386 -arch x86_64"
 	ARCH="macosx_universal"
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
