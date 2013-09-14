@@ -15,15 +15,18 @@ if [ $OSTYPE = "linux-gnu" ]; then
 	echo "=========================="
 	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 	PYTHON="${PYTHON:-python}"
-	if [ `uname -m` = "x86_64" ]; then
-		export CXXFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export CFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export LDFLAGS="-static-libstdc++ -static-libgcc"
+	if [ -z $ARCH ]; then
+		ARCH=`uname -m`
+	fi
+	if [ "$ARCH" = "x86_64" ]; then
+		export CXXFLAGS="-m64 -fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CFLAGS="-m64 -fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export LDFLAGS="-m64 -static-libstdc++ -static-libgcc"
 		ARCH="linux_libcpp6_x86_64"
 	else
-		export CXXFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export CFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export LDFLAGS="-static-libstdc++ -static-libgcc"
+		export CXXFLAGS="-m32 -fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CFLAGS="-m32 -fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export LDFLAGS="-m32 -static-libstdc++ -static-libgcc"
 		ARCH="linux_libcpp6_x86"
 	fi
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
