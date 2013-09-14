@@ -23,6 +23,8 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 		$ sudo apt-get install python-dev
 
+		Note: If using g++ < 4.7 and x86_64, libstdc++ has a bug which doesn't allow shared libraries to be compiled with static libstdc++ (not compiled with -fPIC) Use the libstdc++.a from 4.7.
+
 	+ Make sure the python development environment installed is for Python 2.6 (which is the one Sublime Text 2 uses)
 
 	+ Go to the ``src`` directory and run::
@@ -43,12 +45,12 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 		- Use a patched version of distutils (to have the standard libraries linked statically)::
 
-			Edit a few files and change all instances of ``/MD`` to ``/MT``:
+			Edit a few files and change all instances of ``/MD`` to ``/MT`` and fix ``/MANIFEST``:
 
-				> sed -i'' 's#/MD#/MT#g' C:\Python26\Lib\distutils\msvccompiler.py
-				> sed -i'' 's#/MD#/MT#g' C:\Python26\Lib\distutils\msvc9compiler.py
-				> sed -i'' 's#/MD#/MT#g' C:\Python26-x64\Lib\distutils\msvccompiler.py
-				> sed -i'' 's#/MD#/MT#g' C:\Python26-x64\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/MD#/MT#g" C:\Python26\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/MD#/MT#g" C:\Python26-x64\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python26\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python26-x64\Lib\distutils\msvc9compiler.py
 
 	+ Dependencies for Sublime Text 3 compatible plugin are:
 
@@ -64,12 +66,12 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 		- Use a patched version of distutils (to have the standard libraries linked statically)::
 
-			Edit a few files and change all instances of ``/MD`` to ``/MT``:
+			Edit a few files and change all instances of ``/MD`` to ``/MT`` and fix ``/MANIFEST``:
 
-				> sed -i'' 's#/MD#/MT#g' C:\Python33\Lib\distutils\msvccompiler.py
-				> sed -i'' 's#/MD#/MT#g' C:\Python33\Lib\distutils\msvc9compiler.py
-				> sed -i'' 's#/MD#/MT#g' C:\Python33-x64\Lib\distutils\msvccompiler.py
-				> sed -i'' 's#/MD#/MT#g' C:\Python33-x64\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/MD#/MT#g" C:\Python33\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/MD#/MT#g" C:\Python33-x64\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python33\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python33-x64\Lib\distutils\msvc9compiler.py
 
 	+ Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
 
