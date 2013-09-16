@@ -19,14 +19,18 @@ if [ $OSTYPE = "linux-gnu" ]; then
 		ARCH=`uname -m`
 	fi
 	if [ "$ARCH" = "x86_64" ]; then
-		export CXXFLAGS="-m64 -fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export CFLAGS="-m64 -fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export LDFLAGS="-m64 -static-libstdc++ -static-libgcc"
+		export CC="gcc -m64"
+		export CXX="g++ -m64"
+		export CFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CXXFLAGS="-fno-stack-protector -fPIC -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export LDFLAGS="-static-libstdc++ -static-libgcc"
 		ARCH="linux_libcpp6_x86_64"
 	else
-		export CXXFLAGS="-m32 -fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export CFLAGS="-m32 -fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
-		export LDFLAGS="-m32 -static-libstdc++ -static-libgcc"
+		export CC="gcc -m32"
+		export CXX="g++ -m32"
+		export CFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export CXXFLAGS="-fno-stack-protector -DPy_UNICODE_SIZE=4 -I $BUILDDIR/pcre"
+		export LDFLAGS="-static-libstdc++ -static-libgcc"
 		ARCH="linux_libcpp6_x86"
 	fi
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
@@ -38,8 +42,8 @@ elif [ ${OSTYPE:0:6} = "darwin" ]; then
 	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
 	PYTHON="${PYTHON:-python}"
 	export ARCHFLAGS="-arch i386 -arch x86_64"
-	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre -mmacosx-version-min=10.6"
 	export CFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre -mmacosx-version-min=10.6"
+	export CXXFLAGS="-arch i386 -arch x86_64 -I $BUILDDIR/pcre -mmacosx-version-min=10.6"
 	export LDFLAGS="-arch i386 -arch x86_64"
 	ARCH="macosx_universal"
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
@@ -64,8 +68,8 @@ else
 		ERR="$ERR Python must exist at $PYTHON"
 		PYTHON="${PYTHON:-python}"
 	fi
-	export CXXFLAGS="-I $BUILDDIR/pcre $CXXFLAGS"
 	export CFLAGS="-I $BUILDDIR/pcre $CFLAGS"
+	export CXXFLAGS="-I $BUILDDIR/pcre $CXXFLAGS"
 	LIBPCRE="$BUILDDIR/pcre/libpcre.lib"
 	LIBPCRE_H="$BUILDDIR/pcre/pcre.h"
 	OSTYPE=""
