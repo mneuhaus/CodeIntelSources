@@ -8,6 +8,8 @@ DEPLOYMENTDIR="../SublimeCodeIntel"
 DEPLOYING=1
 source build.sh
 
+ARCHDIR="${ARCHDIR//py27/py26}"
+
 deploy() {
 	echo "Deploying [$ARCH, python v$PYVER -> $ARCHDIR] (${GIT_BRANCH:-unknown} branch)..." && \
 	cd "$SRCDIR/codeintel" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
