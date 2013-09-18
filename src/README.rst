@@ -49,8 +49,8 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 				> sed -i'' "s#/MD#/MT#g" C:\Python26\Lib\distutils\msvc9compiler.py
 				> sed -i'' "s#/MD#/MT#g" C:\Python26-x64\Lib\distutils\msvc9compiler.py
-				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python26\Lib\distutils\msvc9compiler.py
-				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python26-x64\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#append('/MANIFESTFILE:' + temp_manifest)#extend(['/MANIFESTFILE:' + temp_manifest, '/MANIFEST'])#g" C:\Python26\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#append('/MANIFESTFILE:' + temp_manifest)#extend(['/MANIFESTFILE:' + temp_manifest, '/MANIFEST'])#g" C:\Python26-x64\Lib\distutils\msvc9compiler.py
 
 	+ Dependencies for Sublime Text 3 compatible plugin are:
 
@@ -70,8 +70,8 @@ For pulling new stuff, use: ``git pull --recurse-submodules``.
 
 				> sed -i'' "s#/MD#/MT#g" C:\Python33\Lib\distutils\msvc9compiler.py
 				> sed -i'' "s#/MD#/MT#g" C:\Python33-x64\Lib\distutils\msvc9compiler.py
-				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python33\Lib\distutils\msvc9compiler.py
-				> sed -i'' "s#/'/MANIFESTFILE:' + temp_manifest#'/MANIFEST'#g" C:\Python33-x64\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#append('/MANIFESTFILE:' + temp_manifest)#extend(['/MANIFESTFILE:' + temp_manifest, '/MANIFEST'])#g" C:\Python33\Lib\distutils\msvc9compiler.py
+				> sed -i'' "s#append('/MANIFESTFILE:' + temp_manifest)#extend(['/MANIFESTFILE:' + temp_manifest, '/MANIFEST'])#g" C:\Python33-x64\Lib\distutils\msvc9compiler.py
 
 	+ Open a command prompt using Viaual Studio Command Prompt (for x86) or Visual Studio x64 Win64 Command prompt (for amd64), then go to the ``src`` directory and run::
 
