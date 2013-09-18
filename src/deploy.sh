@@ -10,6 +10,16 @@ source build.sh
 
 ARCHDIR="${ARCHDIR//py27/py26}"
 
+if [ "$OSTYPE" = "linux-gnu" ] || [ "$OSTYPE" = "darwin" ]; then
+	xcp() {
+		xargs -I'{}' cp -f "$1" "$2"
+	}
+else
+	xcp() {
+		xargs -i'{}' cp -f "$1" "$2"
+	}
+fi
+
 deploy() {
 	echo "Deploying [$ARCH, python v$PYVER -> $ARCHDIR] (${GIT_BRANCH:-unknown} branch)..." && \
 	cd "$SRCDIR/codeintel" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
@@ -38,17 +48,17 @@ deploy() {
 	echo "Deploying SilverCity..." && \
 	cp -Rf "$BUILDDIR/silvercity/PySilverCity/SilverCity" "$DEPLOYMENTDIR/libs" && \
 	cp -f "$SRCDIR/more4sublime/libs/_SilverCity.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/silvercity" -type f -name "_SilverCity*.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/_SilverCity.$SO" && \
+	find "$BUILDDIR/silvercity" -type f -name "_SilverCity*.$SO" | grep "$PYVER" | xcp "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/_SilverCity.$SO" && \
 		\
 	( \
 		([ "${PYVER:0:1}" = "2" ] && (
 			echo "Deploying cElementTree..." && \
 			cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
-			find "$BUILDDIR/cElementTree" -type f -name "cElementTree*.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/cElementTree.$SO" && \
+			find "$BUILDDIR/cElementTree" -type f -name "cElementTree*.$SO" | grep "$PYVER" | xcp "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/cElementTree.$SO" && \
 				\
 			echo "Deploying ciElementTree..." && \
 			cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-			find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree*.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/ciElementTree.$SO"
+			find "$BUILDDIR/ciElementTree" -type f -name "ciElementTree*.$SO" | grep "$PYVER" | xcp "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/ciElementTree.$SO"
 		)) || \
 		([ "${PYVER:0:1}" = "3" ] && (
 			echo "Deploying iElementTree..." && \
@@ -56,13 +66,13 @@ deploy() {
 			cp -f "$SRCDIR/more4sublime/libs/iElementTree.py" "$DEPLOYMENTDIR/libs" && \
 			cp -f "$SRCDIR/more4sublime/libs/cElementTree.py" "$DEPLOYMENTDIR/libs" && \
 			cp -f "$SRCDIR/more4sublime/libs/ciElementTree.py" "$DEPLOYMENTDIR/libs" && \
-			find "$BUILDDIR/iElementTree" -type f -name "_ielementtree*.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/_ielementtree.$SO"
+			find "$BUILDDIR/iElementTree" -type f -name "_ielementtree*.$SO" | grep "$PYVER" | xcp "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/_ielementtree.$SO"
 		)) \
 	) && \
 		\
 	echo "Deploying Sgmlop..." && \
 	cp -f "$SRCDIR/more4sublime/libs/sgmlop.py" "$DEPLOYMENTDIR/libs" && \
-	find "$BUILDDIR/sgmlop" -type f -name "sgmlop*.$SO" | grep "$PYVER" | xargs -I {} cp -f "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/sgmlop.$SO" && \
+	find "$BUILDDIR/sgmlop" -type f -name "sgmlop*.$SO" | grep "$PYVER" | xcp "{}" "$DEPLOYMENTDIR/arch/$ARCHDIR/sgmlop.$SO" && \
 		\
 	( \
 		([ "${PYVER:0:1}" = "2" ] && (

@@ -9,7 +9,7 @@ get_branch() {
 
 GIT_BRANCH="$(get_branch)"
 
-if [ $OSTYPE = "linux-gnu" ]; then
+if [ "$OSTYPE" = "linux-gnu" ]; then
 	# In Linux, Sublime Text's Python is compiled with UCS4:
 	echo "SublimeCodeIntel for Linux"
 	echo "=========================="
@@ -36,7 +36,7 @@ if [ $OSTYPE = "linux-gnu" ]; then
 	LIBPCRE="$BUILDDIR/pcre/.libs/libpcre.a"
 	LIBPCRE_H="$BUILDDIR/pcre/pcre.h"
 	SO="so"
-elif [ ${OSTYPE:0:6} = "darwin" ]; then
+elif [ "${OSTYPE:0:6}" = "darwin" ]; then
 	echo "SublimeCodeIntel for Mac OS X"
 	echo "============================="
 	BUILDDIR="$SRCDIR/build/${GIT_BRANCH:-unknown}"
