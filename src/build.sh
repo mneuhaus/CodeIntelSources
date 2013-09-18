@@ -9,7 +9,7 @@ get_branch() {
 
 GIT_BRANCH="$(get_branch)"
 
-if [ "$OSTYPE" = "linux-gnu" ]; then
+if [ "${OSTYPE:0:5}" = "linux" ]; then
 	# In Linux, Sublime Text's Python is compiled with UCS4:
 	echo "SublimeCodeIntel for Linux"
 	echo "=========================="

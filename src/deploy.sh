@@ -10,15 +10,13 @@ source build.sh
 
 ARCHDIR="${ARCHDIR//py27/py26}"
 
-if [ "$OSTYPE" = "linux-gnu" ] || [ "$OSTYPE" = "darwin" ]; then
-	xcp() {
+xcp() {
+	if [ "${OSTYPE:0:5}" = "linux" ] || [ "${OSTYPE:0:6}" = "darwin" ]; then
 		xargs -I'{}' cp -f "$1" "$2"
-	}
-else
-	xcp() {
+	else
 		xargs -i'{}' cp -f "$1" "$2"
-	}
-fi
+	fi
+}
 
 deploy() {
 	echo "Deploying [$ARCH, python v$PYVER -> $ARCHDIR] (${GIT_BRANCH:-unknown} branch)..." && \
@@ -84,6 +82,11 @@ deploy() {
 			cp -Rf "$SRCDIR/python3-chardet/chardet" "$DEPLOYMENTDIR/libs" \
 		)) \
 	) && \
+		\
+	echo "Deploying zope.cachedescriptors..." && \
+	mkdir -p "$DEPLOYMENTDIR/libs/zope" && \
+	touch "$DEPLOYMENTDIR/libs/zope/__init__.py" && \
+	cp -Rf "$SRCDIR/zope.cachedescriptors/src/zope/cachedescriptors" "$DEPLOYMENTDIR/libs/zope" && \
 		\
 	echo "Deploying Helper Libs..." && \
 	cp -f "$SRCDIR/more4sublime/styles.py" "$DEPLOYMENTDIR/libs" && \
