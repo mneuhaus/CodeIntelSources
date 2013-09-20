@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-cd "`dirname "$0"`"
-SRCDIR=`pwd`
-ARG="$1"
-
-DEPLOYMENTDIR="../SublimeCodeIntel"
 
 DEPLOYING=1
 source build.sh
@@ -20,14 +15,7 @@ xcp() {
 
 deploy() {
 	echo "Deploying [$ARCH, python v$PYVER -> $ARCHDIR] (${GIT_BRANCH:-unknown} branch)..." && \
-	cd "$SRCDIR/codeintel" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-	cd "$SRCDIR/smallstuff" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-	cd "$SRCDIR/python-sitelib" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-	cd "$SRCDIR/elementtree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-	cd "$SRCDIR/inflector" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
-		\
-	cd $SRCDIR && \
-	cd "$DEPLOYMENTDIR" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+	checkout && \
 		\
 	mkdir -p "$DEPLOYMENTDIR/libs" && \
 	mkdir -p "$DEPLOYMENTDIR/arch/$ARCHDIR" && \
@@ -114,8 +102,6 @@ deploy() {
 	cp -Rf "$SRCDIR/elementtree/elementtree" "$DEPLOYMENTDIR/libs"
 		\
 	cp -Rf "$SRCDIR/inflector" "$DEPLOYMENTDIR/libs" && \
-		\
-	cd $SRCDIR && \
 		\
 	echo "Deployment Done!" || \
 	echo "Deployment Failed!"

@@ -3,6 +3,15 @@ cd "`dirname "$0"`"
 SRCDIR=`pwd`
 ARG="$1"
 
+check() {
+	echo
+	echo "********************************************************************************"
+	echo "* $1"
+	echo "* Press [enter] to continue [ctrl+c] to abort."
+	echo "********************************************************************************"
+	read
+}
+
 get_branch() {
 	git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/\1/p'
 }
@@ -88,6 +97,56 @@ if [ "$ARG" != "--dist" ]; then
 	ARCHDIR="_local_arch"
 fi
 
+DEPLOYMENTDIR="$SRCDIR/../SublimeCodeIntel"
+
+checkout() {
+	cd "$SRCDIR" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "src:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/pcre" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "pcre:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/scintilla" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "scintilla:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/silvercity" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "silvercity:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/cElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "cElementTree:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/ciElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "ciElementTree:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/iElementTree" && ([ "master" = "" ] || [ "master" = "$(get_branch)" ] || (echo "iElementTree:" && git checkout "master")) && \
+	cd "$SRCDIR/sgmlop" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "sgmlop:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/udl" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "udl:" && git checkout "$GIT_BRANCH")) && \
+		\
+	cd "$SRCDIR/codeintel" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "codeintel:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/smallstuff" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "smallstuff:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/python-sitelib" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "python-sitelib:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/elementtree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "elementtree:" && git checkout "$GIT_BRANCH")) && \
+	cd "$SRCDIR/inflector" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "inflector:" && git checkout "$GIT_BRANCH")) && \
+	cd "$DEPLOYMENTDIR" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || (echo "SublimeCodeIntel:" && git checkout "$GIT_BRANCH")) && \
+		\
+	cd "$SRCDIR/chardet" && ([ "master" = "" ] || [ "master" = "$(get_branch)" ] || (echo "chardet:" && git checkout "master")) && \
+	cd "$SRCDIR/python3-chardet" && ([ "master" = "" ] || [ "master" = "$(get_branch)" ] || (echo "python3-chardet:" && git checkout "master")) && \
+	cd "$SRCDIR/zope.cachedescriptors" && ([ "master" = "" ] || [ "master" = "$(get_branch)" ] || (echo "zope.cachedescriptors:" && git checkout "master"))
+}
+
+reset_hard() {
+	checkout && \
+	check "Please check the modules have been checked out! (Ready to do: git reset --hard)" && \
+	cd "$SRCDIR" && echo "src: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/pcre" && echo "pcre: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/scintilla" && echo "scintilla: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/silvercity" && echo "silvercity: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/cElementTree" && echo "cElementTree: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/ciElementTree" && echo "ciElementTree: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/iElementTree" && echo "iElementTree: (git reset --hard origin/master)" && git fetch && git reset --hard "origin/master" && \
+	cd "$SRCDIR/sgmlop" && echo "sgmlop: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/udl" && echo "udl: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+		\
+	cd "$SRCDIR/codeintel" && echo "codeintel: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/smallstuff" && echo "smallstuff: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/python-sitelib" && echo "python-sitelib: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/elementtree" && echo "elementtree: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$SRCDIR/inflector" && echo "inflector: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+	cd "$DEPLOYMENTDIR" && echo "SublimeCodeIntel: (git reset --hard origin/$GIT_BRANCH)" && git fetch && git reset --hard "origin/$GIT_BRANCH" && \
+		\
+	cd "$SRCDIR/chardet" && echo "chardet: (git reset --hard origin/master)" && git fetch && git reset --hard "origin/master" && \
+	cd "$SRCDIR/python3-chardet" && echo "python3-chardet: (git reset --hard origin/master)" && git fetch && git reset --hard "origin/master" && \
+	cd "$SRCDIR/zope.cachedescriptors" && echo "zope.cachedescriptors: (git reset --hard origin/master)" && git fetch && git reset --hard "origin/master"
+}
+
 build() {
 	if [ "$ARG" = "--force" ]; then
 		rm -rf "$BUILDDIR"
@@ -103,11 +162,10 @@ build() {
 	touch "$LOGDIR/iElementTree.log"
 
 	echo "Building [$ARCH, python v$PYVER] (${GIT_BRANCH:-unknown} branch)..." && \
-	([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
+	checkout && \
 	( \
 		([ "$OSTYPE" != "" ] && echo "Building PCRE (*nix)..." && \
 			([ -d "$BUILDDIR/pcre" ] || (
-				cd "$SRCDIR/pcre" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 				rm -rf "$BUILDDIR/pcre" && \
 				cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
 				cd "$BUILDDIR/pcre" && \
@@ -121,7 +179,6 @@ build() {
 			\
 		([ "$OSTYPE" = "" ] && echo "Building PCRE (win)..." && \
 			([ -d "$BUILDDIR/pcre" ] || (
-				cd "$SRCDIR/pcre" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 				rm -rf "$BUILDDIR/pcre" && \
 				cp -R "$SRCDIR/pcre" "$BUILDDIR/pcre" && \
 				cd "$BUILDDIR/pcre" && \
@@ -143,7 +200,6 @@ build() {
 		\
 	(echo "Patching Scintilla..." && \
 		([ -d "$BUILDDIR/scintilla" ] || (
-			cd "$SRCDIR/scintilla" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 			rm -rf "$BUILDDIR/scintilla" && \
 			cp -R "$SRCDIR/scintilla" "$BUILDDIR/scintilla" \
 		)) && \
@@ -154,7 +210,6 @@ build() {
 		\
 	(echo "Building SilverCity..." && \
 		([ -d "$BUILDDIR/silvercity" ] || (
-			cd "$SRCDIR/silvercity" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 			rm -rf "$BUILDDIR/silvercity" && \
 			cp -R "$SRCDIR/silvercity" "$BUILDDIR/silvercity" \
 		)) && \
@@ -174,7 +229,6 @@ build() {
 		([ "${PYVER:0:1}" = "2" ] && ( \
 			(echo "Building cElementTree..." && \
 				([ -d "$BUILDDIR/cElementTree" ] || (
-					cd "$SRCDIR/cElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 					rm -rf "$BUILDDIR/cElementTree" && \
 					cp -R "$SRCDIR/cElementTree" "$BUILDDIR/cElementTree" \
 				)) && \
@@ -183,7 +237,6 @@ build() {
 			) && \
 			(echo "Building ciElementTree..." && \
 				([ -d "$BUILDDIR/ciElementTree" ] || (
-					cd "$SRCDIR/ciElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 					rm -rf "$BUILDDIR/ciElementTree" && \
 					cp -R "$SRCDIR/ciElementTree" "$BUILDDIR/ciElementTree" \
 				)) && \
@@ -194,7 +247,6 @@ build() {
 		([ "${PYVER:0:1}" = "3" ] && ( \
 			(echo "Building iElementTree..." && \
 				([ -d "$BUILDDIR/iElementTree" ] || (
-					cd "$SRCDIR/iElementTree" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "master") && \
 					rm -rf "$BUILDDIR/iElementTree" && \
 					cp -R "$SRCDIR/iElementTree" "$BUILDDIR/iElementTree" \
 				)) && \
@@ -206,7 +258,6 @@ build() {
 		\
 	(echo "Building Sgmlop..." && \
 		([ -d "$BUILDDIR/sgmlop" ] || (
-			cd "$SRCDIR/sgmlop" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 			rm -rf "$BUILDDIR/sgmlop" && \
 			cp -R "$SRCDIR/sgmlop" "$BUILDDIR/sgmlop" \
 		)) && \
@@ -216,7 +267,6 @@ build() {
 		\
 	(echo "Building UDL lexers..." && \
 		([ -d "$BUILDDIR/udl" ] || (
-			cd "$SRCDIR/udl" && ([ "$GIT_BRANCH" = "" ] || [ "$GIT_BRANCH" = "$(get_branch)" ] || git checkout "$GIT_BRANCH") && \
 			rm -rf "$BUILDDIR/udl" && \
 			cp -R "$SRCDIR/udl" "$BUILDDIR/udl" \
 		)) && \
